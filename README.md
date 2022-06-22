@@ -1,11 +1,14 @@
-# tabscolor README
-
-This is the README for your extension "tabscolor". After writing up a brief description, we recommend including the following sections.
 
 ## About tabscolor
 
 This extension let you color your editor tabs without even using commands. A very useful feature that has never been implemented in vscode. 
 
+## Contributors Welcome
+
+Don't hesitate to contribute to this extension.
+
+
+<!--
 ## Features
 
 Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
@@ -51,3 +54,4 @@ Fixed issue #.
 
 Added features X, Y, and Z.
 
+-->
