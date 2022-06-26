@@ -9,11 +9,49 @@ const path = require("path");
 /**
  * @param {vscode.ExtensionContext} context
  */
+
+class Core{
+	constructor(context, filePath){
+		this.context = context
+		this.fileContent=fs.readFileSync(filePath, "utf8");
+		this.file = filePath
+	}
+	startPatch(patchName, isReg = false){
+		let patchString = `/* startpatch ${patchName} */`;
+		if(isReg) patchString = patchString.replace(/\*/g, "\\*")
+		return patchString
+	}
+	endPatch(patchName, isReg = false){
+		let patchString = `/* endpatch ${patchName} */`;
+		if(isReg) patchString = patchString.replace(/\*/g, "\\*")
+		return patchString
+	}
+	remove(patchName){
+		let regString= `(${this.startPatch(patchName, true)})[^]*(${this.endPatch(patchName, true)})`;
+		var reg= new RegExp(regString)
+		this.fileContent = this.fileContent.replace(reg,"");
+		return this;
+	}
+	add(patchName, code){
+		let enclosedCode = `${this.startPatch(patchName)} ${code} ${this.endPatch(patchName)}`;
+		this.fileContent = this.fileContent+" "+enclosedCode;
+		return this;
+	}
+	write(){
+		fs.writeFileSync(this.file, this.fileContent)
+	}
+}
+
 function sourcePath(context) {
 	return path.join(context.extensionPath, "modules");
 }
+
 function modulesPath(context) {
 	return path.join(context.globalStoragePath, "modules");
+}
+
+function reloadCss(){
+	vscode.window.showInformationMessage("---update---");
 }
 function generateStyle(color, title){
 	let colors={
@@ -30,59 +68,77 @@ function generateStyle(color, title){
 		}`;
 }
 function activate(context) {
-	// copyModule(context, "test.js");
-	let monkeyPatch = vscode.extensions.getExtension("iocave.monkey-patch");
-	console.log(modulesPath(context))
-	if (monkeyPatch !== undefined) {
-		monkeyPatch.exports.contribute("mondersky.tabscolor",
-			{
-				folderMap: {
-					"tabscolor": modulesPath(context),
-				},
-				browserModules: [
-					"tabscolor/test"
-				],
-				mainProcessModules: [
-					"tabscolor/test",
-				]
-			}
-		);
-	} else {
-		vscode.window.showWarningMessage("Please install the Monkey Patch Otherwise this extension will not work.");
-	}
-	
 	let disposable = vscode.commands.registerCommand('tabscolor.blue', function () {
-	   console.log("blue");
 	   vscode.window.showInformationMessage('blue');
    });
 
    context.subscriptions.push(disposable);
 	 disposable = vscode.commands.registerCommand('tabscolor.helloWorld', function () {
-		let bootstrap=path.join(path.dirname(require.main.filename), "bootstrap-window.js");
+		let bootstrapPath=path.join(path.dirname(require.main.filename), "bootstrap-window.js");
 		let cssFileLink="vscode-file://vscode-app/"+path.join(modulesPath(context),"inject.css").replace(/\\/g,"/")
-
-		let data = fs.readFileSync(bootstrap,"utf8");
-		// data.replace(/(//patched).*(//patched-end)/,"");
-		data=data+`
-		//patched
+		let bootstrap = new Core(context, bootstrapPath)
+		let code=`
+		var reloadCss = function(){
+			let tabsCss=document.getElementById("tabscss");
+			tabsCss.href=tabsCss.href.replace(/\\?refresh=\d/,"")+"?refresh="+Math.floor(Math.random() * 11)
+		}
+		var createCss = function(){
+			let head = document.getElementsByTagName('head')[0];
+					let link = document.createElement('link');
+					link.rel = 'stylesheet';
+					link.id= 'tabscss';
+					link.type = 'text/css';
+					link.href = 'vscode-file://vscode-app/c:/Users/MAWAKI3/AppData/Roaming/Code - Insiders/User/globalStorage/mondersky.tabscolor/modules/inject.css';
+					link.media = 'all';
+					head.appendChild(link);
+		}
+		var domInsert = function (element, callback=0) {
+			console.log(this)
+			var listen = (function(){
+				var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+				return function( obj, callback ){
+					if( !obj || !obj.nodeType === 1 ) return;  
+					if( MutationObserver ){
+						var obs = new MutationObserver(function(mutations, observer){
+							callback(mutations);
+						})
+						obs.observe( obj, { childList:true, subtree:true });
+					}
+					else if( window.addEventListener ){
+						obj.addEventListener('DOMNodeInserted', callback, false);
+					}
+				}
+			})();
+			let listElm = element;
+			listen( listElm, function(m){ 
+				var addedNodes = []
+				m.forEach(record => record.addedNodes.length & addedNodes.push(...record.addedNodes))
+				if(callback!=0)
+					callback(addedNodes)
+			});
+		};
 		document.addEventListener("DOMContentLoaded", function(event) {
 			console.log("dddonee");
 			setTimeout(function(){
-				document.querySelector(".tabs-container").onclick=function(){
-					let head = document.getElementsByTagName('head')[0];
-					let link = document.createElement('link');
-					link.rel = 'stylesheet';
-					link.type = 'text/css';
-					link.href = '${cssFileLink}';
-					link.media = 'all';
-					head.appendChild(link);
-				}
+
+				
+				domInsert(document, function(appeared){
+					let updatePopup = appeared.find(function(a){
+
+						return a.textContent.trim()=="---update---"
+					})
+					console.log(updatePopup)
+					if(updatePopup){
+						reloadCss()
+					}
+				})
+				createCss()
 			},1000)
-		});
-		//patched-end
-		`
-		fs.writeFileSync(bootstrap,data);
+		})`
+
+		bootstrap.remove("watcher").add("watcher", code).write()
 		// Display a message box to the user
+		reloadCss()
 		vscode.window.showInformationMessage("test");
 	});
 
@@ -95,6 +151,7 @@ function activate(context) {
 		let cssRule =generateStyle("salmon",title)
 		data = data + cssRule;
 		fs.writeFileSync(cssFile, data);
+		reloadCss()
 	});
 
 	context.subscriptions.push(disposable2);
@@ -107,6 +164,7 @@ function activate(context) {
 		let cssRule =generateStyle("green",title)
 		data = data + cssRule;
 		fs.writeFileSync(cssFile, data);
+		vscode.window.showInformationMessage("---update---");
 	});
 
 	context.subscriptions.push(disposable3);

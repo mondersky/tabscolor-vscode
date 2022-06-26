@@ -7,6 +7,18 @@ This extension let you color your editor tabs without even using commands. A ver
 
 Don't hesitate to contribute to this extension.
 
+## TODO
+
+Add more colors
+
+Create File Object (replace, add, delete)
+
+Make sure the extension is activated on launch not on hello world
+
+Add icons to colors
+
+Read popup
+
 
 <!--
 ## Features
