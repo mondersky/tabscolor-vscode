@@ -1,7 +1,28 @@
 
 ## About tabscolor
 
-This extension let you color your editor tabs without even using commands. A very useful feature that has never been implemented in vscode. 
+This extension let you color the background of your editor tabs without using any commands. Useful when working on a project with multiple tabs. 
+The extension is still in an experimental phase.
+
+## How to use
+
+Install the extension, restart your vs code, right click on any tab and chose "color"
+
+## This extension can :
+
+- change the background color of any tab title using the contextual menu
+
+## This extension can't (yet) :
+
+- change the whole background of the editor page
+
+- assign colors to tabs using regex
+
+- set custom colors
+
+## Available commands:
+
+- clear all tabs colors
 
 ## Contributors Welcome
 
@@ -11,59 +32,5 @@ Don't hesitate to contribute to this extension.
 
 Add more colors
 
-Create File Object (replace, add, delete)
-
-Make sure the extension is activated on launch not on hello world
-
 Add icons to colors
 
-Read popup
-
-
-<!--
-## Features
-
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
--->

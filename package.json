@@ -11,21 +11,37 @@
 		  "Other"
 	  ],
 	  "activationEvents": [
-		  "onCommand:tabscolor.helloWorld"
+		  "*"
 	  ],
 	  "main": "./extension.js", 
 	  
 	  "contributes": {
 		"commands": [
+			
 			{
-			  "command": "tabscolor.helloWorld",
-			  "title": "Hello World",
-			  "category": "Hello"
+				"command": "tabscolor.none",
+				"title": "none",
+				"category": "functions"
 			},
 			{
-			  "command": "tabscolor.salmon",
-			  "title": "salmon",
-			  "category": "colors"
+				"command": "tabscolor.debugColors",
+				"title": "debugColors",
+				"category": "functions"
+			},
+			{
+				"command": "tabscolor.repatch",
+				"title": "repatch",
+				"category": "functions"
+			},
+			{
+				"command": "tabscolor.red",
+				"title": "red",
+				"category": "colors"
+			},
+			{
+				"command": "tabscolor.green",
+				"title": "green",
+				"category": "colors"
 			},
 			{
 				"command": "tabscolor.blue",
@@ -33,10 +49,40 @@
 				"category": "colors"
 			},
 			{
-			  "command": "tabscolor.green",
-			  "title": "green",
+			  "command": "tabscolor.orange",
+			  "title": "orange",
 			  "category": "colors"
-			}
+			},
+			{
+			  "command": "tabscolor.yellow",
+			  "title": "yellow",
+			  "category": "colors"
+			},
+			{
+			  "command": "tabscolor.salmon",
+			  "title": "salmon",
+			  "category": "colors"
+			},
+			{
+			  "command": "tabscolor.white",
+			  "title": "white",
+			  "category": "colors"
+			},
+			{
+			  "command": "tabscolor.black",
+			  "title": "black",
+			  "category": "colors"
+			},
+			{
+				"command": "tabscolor.test",
+				"title": "Hello World",
+				"category": "Hello"
+			  }
+			,{
+				"command": "tabscolor.clearTabsColors",
+				"title": "clear all tabs colors",
+				"category": "TabsColor"
+			  }
 		  ],
 		"menus": {
 		  "editor/title/context": [
@@ -49,10 +95,6 @@
 		  ],
 		  "colors": [
 			{
-			  "command": "tabscolor.helloWorld",
-			  "group": "navigation"
-			},
-			{
 			  "command": "tabscolor.blue",
 			  "group": "navigation"
 			},
@@ -63,6 +105,30 @@
 			{
 			  "command": "tabscolor.green",
 			  "group": "navigation"
+			},
+			{
+			  "command": "tabscolor.red",
+			  "group": "navigation"
+			},
+			{
+			  "command": "tabscolor.orange",
+			  "group": "navigation"
+			},
+			{
+			  "command": "tabscolor.yellow",
+			  "group": "navigation"
+			},
+			{
+			  "command": "tabscolor.black",
+			  "group": "navigation"
+			},
+			{
+			  "command": "tabscolor.white",
+			  "group": "navigation"
+			},
+			{
+			  "command": "tabscolor.none",
+			  "group": "functions"
 			}
 		  ]
 		},
