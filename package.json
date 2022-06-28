@@ -5,6 +5,10 @@
 	"version": "0.0.1",
 	"publisher": "mondersky",
 	"icon": "docs/tabscolor.png",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/mondersky/tabscolor-vscode"
+	  },
 	"engines": {
 		"vscode": "^1.68.0"
 	},
