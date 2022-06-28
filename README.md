@@ -30,9 +30,13 @@ Install the extension, restart your vs code, right click on any tab and chose "c
 
 Don't hesitate to contribute to this extension.
 
-## TODO
+## TODO (in progress)
 
 Add more colors
 
-Add icons to colors
+Add color icons to color options within the contextual menu
+
+Allow custom color options
+
+Sort by color button
 

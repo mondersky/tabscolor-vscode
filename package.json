@@ -4,6 +4,7 @@
 	"description": "Easily color your tabs. Useful when working with many tabs",
 	"version": "0.0.1",
 	"publisher": "mondersky",
+	"icon": "docs/tabscolor.png",
 	"engines": {
 		"vscode": "^1.68.0"
 	},
@@ -137,8 +138,7 @@
 		"submenus": [
 			{
 				"id": "colors",
-				"label": "Color",
-				"icon": "$(something)"
+				"label": "Color"
 			}
 		]
 	},
