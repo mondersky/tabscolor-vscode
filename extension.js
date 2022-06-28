@@ -125,7 +125,6 @@ class Core{
 		};
 		let separator = this.file.includes("/") ? "/" : "\\";
 		let baseName = this.file.split(separator).reverse()[0];
-		console.log("oss",os.platform())
 		var command=`mv "${this.file}" "${baseName}"`
 		switch(os.platform()){
 			case "win32":{
@@ -352,15 +351,6 @@ function activate(context) {
 	}
 	
 	let disposable = vscode.commands.registerCommand('tabscolor.test', function () {
-		if(bootstrap.isReadOnly()){
-			console.log("is read only")
-			if(!bootstrap.chmod()){
-				bootstrap.sudoPrompt(function(){
-
-				})
-			}
-		}
-		vscode.window.showInformationMessage("test");
 	});
 
 	disposable = vscode.commands.registerCommand('tabscolor.clearTabsColors', function () {
