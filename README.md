@@ -1,6 +1,8 @@
 
 ## About tabscolor
 
+![Title background](./docs/demo.gif)
+
 This extension let you color the background of your editor tabs without using any commands. Useful when working on a project with multiple tabs. 
 The extension is still in an experimental phase.
 

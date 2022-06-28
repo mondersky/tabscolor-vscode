@@ -3,6 +3,8 @@
 const vscode = require('vscode');
 const fs = require('fs');
 const path = require("path");
+const sudo = require('sudo-prompt');
+const os = require("os");
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 
@@ -63,12 +65,31 @@ class Core{
 	constructor(context, filePath){
 		this.context = context
 		this.fileContent=fs.readFileSync(filePath, "utf8");
+		this.initialContent = this.fileContent;
 		this.file = filePath
 	}
 	startPatch(patchName, isReg = false){
 		let patchString = `/* startpatch ${patchName} */`;
 		if(isReg) patchString = patchString.replace(/\*/g, "\\*")
 		return patchString
+	}
+	isReadOnly(){
+		try {
+			fs.writeFileSync(this.file, this.initialContent);
+		  }
+		  catch (e) {
+			return true;
+		  }
+	}
+	chmod(){
+		try {
+			let result = fs.chmodSync(this.file, 0o700)
+		}
+		catch (e) {
+			console.log("Error Code:", e);
+			return false;
+		}
+		return true;
 	}
 	hasPatch(patchName){
 		return this.fileContent.includes(this.startPatch(patchName))
@@ -91,9 +112,38 @@ class Core{
 	}
 	empty(){
 		fs.writeFileSync(this.file, "")
+		this.initialContent = ""
 	}
 	write(){
 		fs.writeFileSync(this.file, this.fileContent)
+		this.initialContent = this.fileContent
+	}
+	sudoPrompt(func){
+
+		var options = {
+			name: 'TabsColor'
+		};
+		let separator = this.file.includes("/") ? "/" : "\\";
+		let baseName = this.file.split(separator).reverse()[0];
+		console.log("oss",os.platform())
+		var command=`mv "${this.file}" "${baseName}"`
+		switch(os.platform()){
+			case "win32":{
+				command=`rename "${this.file}" "${baseName}"`
+			}
+			break;
+		}
+		sudo.exec(command, options,
+		function(error, stdout, stderr) {
+			if (error) {
+				func(false);
+					throw error;
+			}
+			else{
+				func(true)
+			}
+		}
+		);
 	}
 }
 
@@ -188,10 +238,16 @@ function unsetColor(context, title){
 }
 
 function promptRestart() {
-  
 	vscode.window
 	  .showInformationMessage(
 		`Restart VS Code (not just reload) in order for tabscolor changes to take effect.`,
+	  )
+  }
+
+function promptRestartAfterUpdate() {
+	vscode.window
+	  .showInformationMessage(
+		`VS Code files change detected. Restart VS Code (not just reload) in order for tabscolor to work.`,
 	  )
   }
 function activate(context) {
@@ -267,11 +323,43 @@ function activate(context) {
 	})`
 	
 	if(!bootstrap.hasPatch("watcher")){
-		bootstrap.add("watcher", code).write()
-		promptRestart()
+		if(bootstrap.isReadOnly() && !bootstrap.chmod()){
+				bootstrap.sudoPrompt(function(result){
+					if(result){
+						bootstrap.add("watcher", code).write()
+						if(storage.get("patchedBefore")){
+							promptRestartAfterUpdate()
+						}
+						else{
+							storage.set("patchedBefore", true)
+							promptRestart()
+						}
+					}else{
+						vscode.window.showErrorMessage("Tabscolor was unable to write to "+bootstrap.file);
+					}
+				})
+		}
+		else{
+			bootstrap.add("watcher", code).write()
+			if(storage.get("patchedBefore")){
+				promptRestartAfterUpdate()
+			}
+			else{
+				storage.set("patchedBefore", true)
+				promptRestart()
+			}
+		}
 	}
 	
 	let disposable = vscode.commands.registerCommand('tabscolor.test', function () {
+		if(bootstrap.isReadOnly()){
+			console.log("is read only")
+			if(!bootstrap.chmod()){
+				bootstrap.sudoPrompt(function(){
+
+				})
+			}
+		}
 		vscode.window.showInformationMessage("test");
 	});
 
@@ -301,6 +389,12 @@ function activate(context) {
 	
 	disposable = vscode.commands.registerCommand('tabscolor.repatch', function (a, b) {
 		bootstrap.remove("watcher").add("watcher", code).write()
+		promptRestart()
+	});
+
+	
+	disposable = vscode.commands.registerCommand('tabscolor.removePatch', function (a, b) {
+		bootstrap.remove("watcher").write()
 		promptRestart()
 	});
 
@@ -361,8 +455,13 @@ function activate(context) {
 	context.subscriptions.push(disposable);
 }
 
-// this method is called when your extension is deactivated
-function deactivate() {}
+function deactivate() {
+	
+	let bootstrapPath=path.join(path.dirname(require.main.filename), "bootstrap-window.js");
+	let bootstrap = new Core(context, bootstrapPath)
+	bootstrap.remove("watcher").write();
+
+}
 
 module.exports = {
 	activate,

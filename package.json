@@ -1,23 +1,21 @@
 {
 	"name": "tabscolor",
-	  "displayName": "tabscolor",
-	  "description": "Easily color your tabs. Useful when working with many tabs",
-	  "version": "0.0.1",
-	  "publisher":"mondersky",
-	  "engines": {
-		  "vscode": "^1.68.0"
-	  },
-	  "categories": [
-		  "Other"
-	  ],
-	  "activationEvents": [
-		  "*"
-	  ],
-	  "main": "./extension.js", 
-	  
-	  "contributes": {
+	"displayName": "tabscolor",
+	"description": "Easily color your tabs. Useful when working with many tabs",
+	"version": "0.0.1",
+	"publisher": "mondersky",
+	"engines": {
+		"vscode": "^1.68.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"*"
+	],
+	"main": "./extension.js",
+	"contributes": {
 		"commands": [
-			
 			{
 				"command": "tabscolor.none",
 				"title": "none",
@@ -31,6 +29,11 @@
 			{
 				"command": "tabscolor.repatch",
 				"title": "repatch",
+				"category": "functions"
+			},
+			{
+				"command": "tabscolor.removePatch",
+				"title": "remove patch",
 				"category": "functions"
 			},
 			{
@@ -49,113 +52,113 @@
 				"category": "colors"
 			},
 			{
-			  "command": "tabscolor.orange",
-			  "title": "orange",
-			  "category": "colors"
+				"command": "tabscolor.orange",
+				"title": "orange",
+				"category": "colors"
 			},
 			{
-			  "command": "tabscolor.yellow",
-			  "title": "yellow",
-			  "category": "colors"
+				"command": "tabscolor.yellow",
+				"title": "yellow",
+				"category": "colors"
 			},
 			{
-			  "command": "tabscolor.salmon",
-			  "title": "salmon",
-			  "category": "colors"
+				"command": "tabscolor.salmon",
+				"title": "salmon",
+				"category": "colors"
 			},
 			{
-			  "command": "tabscolor.white",
-			  "title": "white",
-			  "category": "colors"
+				"command": "tabscolor.white",
+				"title": "white",
+				"category": "colors"
 			},
 			{
-			  "command": "tabscolor.black",
-			  "title": "black",
-			  "category": "colors"
+				"command": "tabscolor.black",
+				"title": "black",
+				"category": "colors"
 			},
 			{
 				"command": "tabscolor.test",
 				"title": "Hello World",
 				"category": "Hello"
-			  }
-			,{
+			},
+			{
 				"command": "tabscolor.clearTabsColors",
 				"title": "clear all tabs colors",
 				"category": "TabsColor"
-			  }
-		  ],
+			}
+		],
 		"menus": {
-		  "editor/title/context": [
-			
-			{
-			  "submenu": "colors",
-			  "group": "navigation",
-			  "title":"color"
-			}
-		  ],
-		  "colors": [
-			{
-			  "command": "tabscolor.blue",
-			  "group": "navigation"
-			},
-			{
-			  "command": "tabscolor.salmon",
-			  "group": "navigation"
-			},
-			{
-			  "command": "tabscolor.green",
-			  "group": "navigation"
-			},
-			{
-			  "command": "tabscolor.red",
-			  "group": "navigation"
-			},
-			{
-			  "command": "tabscolor.orange",
-			  "group": "navigation"
-			},
-			{
-			  "command": "tabscolor.yellow",
-			  "group": "navigation"
-			},
-			{
-			  "command": "tabscolor.black",
-			  "group": "navigation"
-			},
-			{
-			  "command": "tabscolor.white",
-			  "group": "navigation"
-			},
-			{
-			  "command": "tabscolor.none",
-			  "group": "functions"
-			}
-		  ]
+			"editor/title/context": [
+				{
+					"submenu": "colors",
+					"group": "navigation",
+					"title": "color"
+				}
+			],
+			"colors": [
+				{
+					"command": "tabscolor.blue",
+					"group": "navigation"
+				},
+				{
+					"command": "tabscolor.salmon",
+					"group": "navigation"
+				},
+				{
+					"command": "tabscolor.green",
+					"group": "navigation"
+				},
+				{
+					"command": "tabscolor.red",
+					"group": "navigation"
+				},
+				{
+					"command": "tabscolor.orange",
+					"group": "navigation"
+				},
+				{
+					"command": "tabscolor.yellow",
+					"group": "navigation"
+				},
+				{
+					"command": "tabscolor.black",
+					"group": "navigation"
+				},
+				{
+					"command": "tabscolor.white",
+					"group": "navigation"
+				},
+				{
+					"command": "tabscolor.none",
+					"group": "functions"
+				}
+			]
 		},
 		"submenus": [
-		  {
-			"id": "colors",
-			"label": "Color",
-			"icon": "$(something)"
-		  }
+			{
+				"id": "colors",
+				"label": "Color",
+				"icon": "$(something)"
+			}
 		]
-	  },
-	  "scripts": {
-		  "lint": "eslint .",
-		  "pretest": "npm run lint",
-		  "test": "node ./test/runTest.js"
-	  },
-	  "devDependencies": {
-		  "@types/vscode": "^1.68.0",
-		  "@types/glob": "^7.2.0",
-		  "@types/mocha": "^9.1.1",
-		  "@types/node": "16.x",
-		  "eslint": "^8.16.0",
-		  "glob": "^8.0.3",
-		  "mocha": "^10.0.0",
-		  "typescript": "^4.7.2",
-		  "@vscode/test-electron": "^2.1.3"
-	  }
-  
-  }
-  
+	},
+	"scripts": {
+		"lint": "eslint .",
+		"pretest": "npm run lint",
+		"test": "node ./test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.68.0",
+		"@types/glob": "^7.2.0",
+		"@types/mocha": "^9.1.1",
+		"@types/node": "16.x",
+		"eslint": "^8.16.0",
+		"glob": "^8.0.3",
+		"mocha": "^10.0.0",
+		"typescript": "^4.7.2",
+		"@vscode/test-electron": "^2.1.3"
+	},
+	"dependencies": {
+		"sudo-prompt": "^9.2.1"
+	}
+}
