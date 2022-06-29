@@ -270,7 +270,7 @@ function promptRestartAfterUpdate() {
 function activate(context) {
 
 	let storage = new Storage(context);
-	
+	console.log("activation start")
 	let bootstrapPath=path.join(path.dirname(require.main.filename), "bootstrap-window.js");
 	let cssFileLink="vscode-file://vscode-app/"+path.join(modulesPath(context),"inject.css").replace(/\\/g,"/")
 	let bootstrap = new Core(context, bootstrapPath)
@@ -346,6 +346,7 @@ function activate(context) {
 						bootstrap.add("watcher", code).write()
 						if(storage.get("patchedBefore")){
 							storage.set("secondActivation", false)
+							storage.set("firstActivation", false)
 							promptRestartAfterUpdate()
 						}
 						else{
@@ -360,6 +361,7 @@ function activate(context) {
 		else{
 			bootstrap.add("watcher", code).write()
 			if(storage.get("patchedBefore")){
+				storage.set("firstActivation", false)
 				storage.set("secondActivation", false)
 				promptRestartAfterUpdate()
 			}
@@ -369,9 +371,15 @@ function activate(context) {
 			}
 		}
 	}
+	else{
+		storage.set("patchedBefore", true)
+		storage.set("firstActivation", true)
+	}
 	if(storage.get("firstActivation")){
 		storage.set("secondActivation", true)
 	}
+	console.log("activation end")
+
 	storage.set("firstActivation", true)
 	let disposable = vscode.commands.registerCommand('tabscolor.test', function () {
 	});
