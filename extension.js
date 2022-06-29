@@ -12,7 +12,7 @@ const os = require("os");
  * @param {vscode.ExtensionContext} context
  */
 
-class Storage{
+ class Storage{
 	constructor(context){
 		this.storage = context.globalState
 	}
@@ -225,15 +225,33 @@ function generateCssFile(context){
 }
 function setColor(context, color, title){
 		let storage = new Storage(context);
-		storage.addTabColor(color, title)
-		generateCssFile(context)
-		reloadCss()
+		if(storage.get("patchedBefore")){
+			if(storage.get("secondActivation")){
+				storage.addTabColor(color, title)
+				generateCssFile(context)
+				reloadCss()
+			}else{
+				vscode.window.showErrorMessage("In order for Tabscolor to work, you need to restart your VS Code (not just reload) ");
+			}
+		}
+		else{
+			vscode.window.showErrorMessage("Tabscolor was unable to patch your VS Code files. ");
+		}
 }
 function unsetColor(context, title){
-		let storage = new Storage(context);
-		storage.removeTabColor(title)
-		generateCssFile(context)
-		reloadCss()
+	let storage = new Storage(context);
+		if(storage.get("patchedBefore")){
+			if(storage.get("secondActivation")){
+				storage.removeTabColor(title)
+				generateCssFile(context)
+				reloadCss()
+			}else{
+				vscode.window.showErrorMessage("In order for Tabscolor to work, you need to restart your VS Code (not just reload) ");
+			}
+		}
+		else{
+			vscode.window.showErrorMessage("Tabscolor was unable to patch your VS Code files. ");
+		}
 }
 
 function promptRestart() {
@@ -327,6 +345,7 @@ function activate(context) {
 					if(result){
 						bootstrap.add("watcher", code).write()
 						if(storage.get("patchedBefore")){
+							storage.set("secondActivation", false)
 							promptRestartAfterUpdate()
 						}
 						else{
@@ -341,6 +360,7 @@ function activate(context) {
 		else{
 			bootstrap.add("watcher", code).write()
 			if(storage.get("patchedBefore")){
+				storage.set("secondActivation", false)
 				promptRestartAfterUpdate()
 			}
 			else{
@@ -349,7 +369,10 @@ function activate(context) {
 			}
 		}
 	}
-	
+	if(storage.get("firstActivation")){
+		storage.set("secondActivation", true)
+	}
+	storage.set("firstActivation", true)
 	let disposable = vscode.commands.registerCommand('tabscolor.test', function () {
 	});
 
@@ -365,6 +388,12 @@ function activate(context) {
 	 disposable = vscode.commands.registerCommand('tabscolor.debugColors', function () {
 		// Display the stored tabs colors in console
 		console.log(storage.get("tabs"));
+	});
+
+	 disposable = vscode.commands.registerCommand('tabscolor.debugEraseStorage', function () {
+		storage.set("firstActivation",false)
+		storage.set("secondActivation",false)
+		storage.set("patchedBefore",false)
 	});
 
 
@@ -445,11 +474,16 @@ function activate(context) {
 	context.subscriptions.push(disposable);
 }
 
-function deactivate() {
-	
+function deactivate(context) {
+	console.log("deactivation");
+	console.log(context);
+	let storage = new Storage(context);
 	let bootstrapPath=path.join(path.dirname(require.main.filename), "bootstrap-window.js");
 	let bootstrap = new Core(context, bootstrapPath)
+	storage.set("firstActivation", false)
+	storage.set("secondActivation", false)
 	bootstrap.remove("watcher").write();
+	console.log("deactivation complete");
 
 }
 

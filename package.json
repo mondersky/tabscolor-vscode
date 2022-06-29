@@ -1,14 +1,14 @@
 {
 	"name": "tabscolor",
-	"displayName": "tabscolor",
-	"description": "Easily color your tabs. Useful when working with many tabs",
-	"version": "0.0.1",
+	"displayName": "Tabs color",
+	"description": "Color your tabs. Useful when working with many tabs",
+	"version": "0.0.2",
 	"publisher": "mondersky",
 	"icon": "docs/tabscolor.png",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/mondersky/tabscolor-vscode"
-	  },
+	},
 	"engines": {
 		"vscode": "^1.68.0"
 	},
@@ -17,6 +17,9 @@
 	],
 	"activationEvents": [
 		"*"
+	],
+	"keywords": [
+		"tab" , "color", "hightligh" , "background", "style"
 	],
 	"main": "./extension.js",
 	"contributes": {
@@ -29,6 +32,11 @@
 			{
 				"command": "tabscolor.debugColors",
 				"title": "debugColors",
+				"category": "functions"
+			},
+			{
+				"command": "tabscolor.debugEraseStorage",
+				"title": "erase variables storage",
 				"category": "functions"
 			},
 			{
@@ -149,7 +157,8 @@
 	"scripts": {
 		"lint": "eslint .",
 		"pretest": "npm run lint",
-		"test": "node ./test/runTest.js"
+		"test": "node ./test/runTest.js",
+		"vscode:uninstall": "node ./src/uninstall.js"
 	},
 	"devDependencies": {
 		"@types/vscode": "^1.68.0",
@@ -164,5 +173,11 @@
 	},
 	"dependencies": {
 		"sudo-prompt": "^9.2.1"
+	},
+	"__metadata": {
+		"id": "da199d98-50b1-4ae5-bcf7-27a9bf1b9e0a",
+		"publisherDisplayName": "mondersky",
+		"publisherId": "1355920c-d02e-47e8-8d1a-d2f59c078d43",
+		"isPreReleaseVersion": false
 	}
 }
