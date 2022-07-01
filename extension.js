@@ -178,10 +178,12 @@ function generateCssFile(context){
 	let tabs = storage.get("tabs")
 	let style = ".tab.active{opacity:1}";
 	for(let a in byFileType){
+		if(a=="filetype") continue;
 		style+=`.tab[title$=".${a}" i]{background-color:${byFileType[a].backgroundColor} !important; opacity:0.6;}
 				.tab[title$="${a}" i] a,.tab[title$="${a}" i] .monaco-icon-label:after,.tab[title$="${a}" i] .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`
 	}
 	for(let a in byDirectory){
+		if(a=="my/directory/") continue;
 		let title = a.replace(/\\/g,"\\\\")
 		style+=`.tab[title^="${title}" i]{background-color:${byDirectory[a].backgroundColor} !important; opacity:0.6;}
 				.tab[title^="${title}" i] a,.tab[title^="${title}" i] .monaco-icon-label:after,.tab[title^="${title}" i] .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`

@@ -2,7 +2,7 @@
 	"name": "tabscolor",
 	"displayName": "Tabs color",
 	"description": "Color your tabs. Useful when working with many tabs",
-	"version": "0.0.3",
+	"version": "0.1.1",
 	"publisher": "mondersky",
 	"icon": "docs/tabscolor.png",
 	"repository": {
@@ -10,7 +10,7 @@
 		"url": "https://github.com/mondersky/tabscolor-vscode"
 	},
 	"engines": {
-		"vscode": "^1.68.0"
+		"vscode": "^1.0.0"
 	},
 	"categories": [
 		"Other"
@@ -29,22 +29,22 @@
 			  "tabsColor.byFileType": {
 				"type": "object",
 				"default": {
-					"js":{
-						"backgroundColor":"",
-						"fontColor":""
+					"myfiletype":{
+						"backgroundColor":"red",
+						"fontColor":"white"
 					}
 				},
-				"description": "Automatically color tabs based on their file type"
+				"description": "Automatically color tabs based on their file type. See example on the extension page "
 			  },
 			  "tabsColor.byDirectory": {
 				"type": "object",
 				"default": {
 					"my/directory/":{
-						"backgroundColor":"",
-						"fontColor":""
+						"backgroundColor":"#ffffff",
+						"fontColor":"#000000"
 					}
 				},
-				"description": "Automatically color tabs based on their parent folder path"
+				"description": "Automatically color tabs based on their parent folder path. See example on the extension page"
 			  }
 			}
 		  },

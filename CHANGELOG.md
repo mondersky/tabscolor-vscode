@@ -1,9 +1,12 @@
-# Change Log
 
-All notable changes to the "tabscolor" extension will be documented in this file.
+## [0.1.1] - 2022-07-01
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+- Color by filetypes & directories
 
-## [Unreleased]
+## [0.0.3] - 2022-06-29
+
+- corrections
+
+## [0.0.1] - 2022-06-28
 
 - Initial release
