@@ -3,24 +3,52 @@
 
 ![Title background](./docs/demo.gif)
 
-This extension lets you color the background of your editor tabs without using any commands. Useful when working on a project with multiple tabs. 
+This extension lets you color the background of your editor tabs either by right click, by filetype or by directory. Useful when working on a project with multiple tabs. 
 The extension is still in an experimental phase.
 
-## How to use
+## How to first use
 
-Install the extension, restart your vs code (not just reload), right click on any tab and chose "color"
+Install the extension, restart your vs code (not just reload), right click on any tab and select from the color menu
 
+## Set tabs color based on filetypes
+
+example: 
+```
+"tabsColor.byFileType": {
+    "js": {
+      "backgroundColor": "yellow",
+      "fontColor": "black"
+    }
+  }
+```
+Add this to your VS Code user settings.json
+## Set tabs color based on directories
+
+example:
+```
+"tabsColor.byDirectory": {
+  "C:\\wamp\\www\\my_project\\css": {
+    "backgroundColor": "#00efff",
+    "fontColor": "#ffffff"
+  }
+  }
+```
+Add this to your VS Code user settings.json
 ## This extension can :
 
-- change the background color of any tab header from the contextual menu
+- change the background color of any tab header using the contextual menu
+
+- change the backgrounf color of tabs based on filetypes
+
+- change the backgrounf color of tabs based on directories
 
 ## This extension can't (yet) :
 
 - change the whole background of the tab page
 
-- assign colors to tabs based on regex
+- change the backgrounf color of tabs based on regex
 
-- set custom colors
+- set custom colors in the contextual menu
 
 ## Notes :
 

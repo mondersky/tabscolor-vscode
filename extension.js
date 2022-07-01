@@ -170,10 +170,22 @@ function generateCssFile(context){
 		"white":{ background:"#ffffff",color:"black"},
 	}
 	let storage = new Storage(context);
+	let rulesBasedStyle = vscode.workspace.getConfiguration('tabsColor');
+	let byFileType = rulesBasedStyle.byFileType;
+	let byDirectory = rulesBasedStyle.byDirectory;
 	let cssFile=path.join(modulesPath(context),"inject.css").replace(/\\/g,"/")
 	let data = "";
 	let tabs = storage.get("tabs")
-	let style = "";
+	let style = ".tab.active{opacity:1}";
+	for(let a in byFileType){
+		style+=`.tab[title$=".${a}" i]{background-color:${byFileType[a].backgroundColor} !important; opacity:0.6;}
+				.tab[title$="${a}" i] a,.tab[title$="${a}" i] .monaco-icon-label:after,.tab[title$="${a}" i] .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`
+	}
+	for(let a in byDirectory){
+		let title = a.replace(/\\/g,"\\\\")
+		style+=`.tab[title^="${title}" i]{background-color:${byDirectory[a].backgroundColor} !important; opacity:0.6;}
+				.tab[title^="${title}" i] a,.tab[title^="${title}" i] .monaco-icon-label:after,.tab[title^="${title}" i] .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`
+	}
 	let activeSelectors = "";
 	let activeSelectorsArr = [];
 	for(let i in tabs){
@@ -376,9 +388,17 @@ function activate(context) {
 		storage.set("firstActivation", true)
 	}
 	if(storage.get("firstActivation")){
+		generateCssFile(context)
+		reloadCss();
 		storage.set("secondActivation", true)
 	}
-	console.log("activation end")
+	vscode.workspace.onDidChangeConfiguration(e => {
+        if (e.affectsConfiguration('tabsColor')) {
+            vscode.window.showInformationMessage('tabs colors updated');
+			generateCssFile(context)
+			reloadCss();
+        }
+    });
 
 	storage.set("firstActivation", true)
 	let disposable = vscode.commands.registerCommand('tabscolor.test', function () {
@@ -389,7 +409,9 @@ function activate(context) {
 		let css = new Core(context, cssFile);
 		storage.emptyTabs()
 		css.empty();
+		generateCssFile(context)
 		reloadCss()
+		vscode.window.showInformationMessage('tabs colors cleared. rules based on filetype and directories aren\'t affected ');
 	});
 
 

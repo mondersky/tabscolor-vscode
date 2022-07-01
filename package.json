@@ -19,10 +19,35 @@
 		"*"
 	],
 	"keywords": [
-		"tab" , "color", "hightligh" , "background", "style"
+		"tab" , "color", "highlight" , "background", "style"
 	],
 	"main": "./extension.js",
 	"contributes": {
+		"configuration": {
+			"title": "TabsColor",
+			"properties": {
+			  "tabsColor.byFileType": {
+				"type": "object",
+				"default": {
+					"js":{
+						"backgroundColor":"",
+						"fontColor":""
+					}
+				},
+				"description": "Automatically color tabs based on their file type"
+			  },
+			  "tabsColor.byDirectory": {
+				"type": "object",
+				"default": {
+					"my/directory/":{
+						"backgroundColor":"",
+						"fontColor":""
+					}
+				},
+				"description": "Automatically color tabs based on their parent folder path"
+			  }
+			}
+		  },
 		"commands": [
 			{
 				"command": "tabscolor.none",
