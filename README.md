@@ -1,12 +1,12 @@
 
 ## About tabscolor
 
-![Title background](./docs/demo.gif)
+![Title background](./docs/mydemo.gif)
 
 This extension lets you color the background of your editor tabs either by right click, by filetype or by directory. Useful when working on a project with multiple tabs. 
 The extension is still in an experimental phase.
 
-## How to first use
+## Quickstart
 
 Install the extension, restart your vs code (not just reload), right click on any tab and select from the color menu
 

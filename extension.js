@@ -164,7 +164,7 @@ function generateCssFile(context){
 		"green":{ background:"#528752",color:"white"},
 		"blue":{ background:"#3498DB",color:"white"},
 		"orange":{ background:"#DC7633",color:"white"},
-		"yellow":{ background:"#F1C40F",color:"brown"},
+		"yellow":{ background:"#F1C40F",color:"black"},
 		"red":{ background:"#C0392B",color:"white"},
 		"black":{ background:"#000000",color:"white"},
 		"white":{ background:"#ffffff",color:"black"},
@@ -284,7 +284,6 @@ function promptRestartAfterUpdate() {
 function activate(context) {
 
 	let storage = new Storage(context);
-	console.log("activation start")
 	let bootstrapPath=path.join(path.dirname(require.main.filename), "bootstrap-window.js");
 	let cssFileLink="vscode-file://vscode-app/"+path.join(modulesPath(context),"inject.css").replace(/\\/g,"/")
 	let bootstrap = new Core(context, bootstrapPath)
@@ -507,15 +506,12 @@ function activate(context) {
 }
 
 function deactivate(context) {
-	console.log("deactivation");
-	console.log(context);
 	let storage = new Storage(context);
 	let bootstrapPath=path.join(path.dirname(require.main.filename), "bootstrap-window.js");
 	let bootstrap = new Core(context, bootstrapPath)
 	storage.set("firstActivation", false)
 	storage.set("secondActivation", false)
 	bootstrap.remove("watcher").write();
-	console.log("deactivation complete");
 
 }
 
