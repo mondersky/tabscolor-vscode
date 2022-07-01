@@ -19,7 +19,7 @@
 		"*"
 	],
 	"keywords": [
-		"tab" , "color", "highlight" , "background", "style"
+		"tab" , "color", "highlight" , "filetype", "regex"
 	],
 	"main": "./extension.js",
 	"contributes": {

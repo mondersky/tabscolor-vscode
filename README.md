@@ -34,19 +34,20 @@ example:
   }
 ```
 Add this to your VS Code user settings.json
+The directoy path must be absolute
 ## This extension can :
 
 - change the background color of any tab header using the contextual menu
 
-- change the backgrounf color of tabs based on filetypes
+- change the background color of tabs based on filetypes
 
-- change the backgrounf color of tabs based on directories
+- change the background color of tabs based on directories
 
 ## This extension can't (yet) :
 
 - change the whole background of the tab page
 
-- change the backgrounf color of tabs based on regex
+- change the background color of tabs based on regex
 
 - set custom colors in the contextual menu
 
