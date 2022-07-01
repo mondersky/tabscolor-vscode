@@ -34,6 +34,7 @@ example:
   }
 ```
 Add this to your VS Code user settings.json
+
 The directoy path must be absolute
 ## This extension can :
 
