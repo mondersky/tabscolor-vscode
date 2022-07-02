@@ -173,6 +173,7 @@ function generateCssFile(context){
 	let rulesBasedStyle = vscode.workspace.getConfiguration('tabsColor');
 	let byFileType = rulesBasedStyle.byFileType;
 	let byDirectory = rulesBasedStyle.byDirectory;
+	let colorBlindSafe = rulesBasedStyle.colorBlindSafe; // safe palette
 	let cssFile=path.join(modulesPath(context),"inject.css").replace(/\\/g,"/")
 	let data = "";
 	let tabs = storage.get("tabs")
@@ -187,6 +188,18 @@ function generateCssFile(context){
 		let title = a.replace(/\\/g,"\\\\")
 		style+=`.tab[title^="${title}" i]{background-color:${byDirectory[a].backgroundColor} !important; opacity:0.6;}
 				.tab[title^="${title}" i] a,.tab[title^="${title}" i] .monaco-icon-label:after,.tab[title^="${title}" i] .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`
+	}
+	if(colorBlindSafe) // overwriting palette
+		colors={
+			"none":{ background:"transparent",color:"inherit"},
+			"salmon":{ background:"#CC79A7",color:"white"},
+			"green":{ background:"#009E73",color:"white"},
+			"blue":{ background:"#0072B2",color:"white"},
+			"orange":{ background:"#E69F00",color:"white"},
+			"yellow":{ background:"#F0E442",color:"black"},
+			"red":{ background:"#D55E00",color:"white"},
+			"black":{ background:"#000000",color:"white"},
+			"white":{ background:"#ffffff",color:"black"},
 	}
 	let activeSelectors = "";
 	let activeSelectorsArr = [];
