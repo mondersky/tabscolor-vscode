@@ -36,6 +36,17 @@ example:
 Add this to your VS Code user settings.json
 
 The directoy path must be absolute
+## Set the active tab color
+
+example:
+```
+"tabsColor.activeTab": {
+  "backgroundColor": "yellow",
+  "fontColor": "black"
+}
+```
+Add this to your VS Code user settings.json
+
 ## This extension can :
 
 - change the background color of any tab header using the contextual menu
@@ -73,8 +84,6 @@ Add color icons to color options in the contextual menu
 Allow custom color options
 
 Sort by color button
-
-new setting: active tab color
 
 Allow partial paths when coloring based on directory
 

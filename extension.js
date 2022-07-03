@@ -173,6 +173,7 @@ function generateCssFile(context){
 	let rulesBasedStyle = vscode.workspace.getConfiguration('tabsColor');
 	let byFileType = rulesBasedStyle.byFileType;
 	let byDirectory = rulesBasedStyle.byDirectory;
+	let activeTab = rulesBasedStyle.activeTab;
 	let cssFile=path.join(modulesPath(context),"inject.css").replace(/\\/g,"/")
 	let data = "";
 	let tabs = storage.get("tabs")
@@ -189,6 +190,9 @@ function generateCssFile(context){
 				.tab[title^="${title}" i] a,.tab[title^="${title}" i] .monaco-icon-label:after,.tab[title^="${title}" i] .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`
 	}
 	style+=".tab.active{opacity:1 !important}";
+	if(activeTab.backgroundColor != "default"){
+		style+=`body .tabs-container .tab.active{background-color:${activeTab.backgroundColor} !important; }body .tabs-container .tab.active a,body .tabs-container .tab.active .monaco-icon-label:after,body .tabs-container .tab.active .monaco-icon-label:before{color:${activeTab.fontColor} !important;}`;
+	}
 	let activeSelectors = "";
 	let activeSelectorsArr = [];
 	for(let i in tabs){

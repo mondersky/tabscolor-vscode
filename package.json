@@ -2,7 +2,7 @@
 	"name": "tabscolor",
 	"displayName": "Tabs color",
 	"description": "Color any tab by right click, based on file type or based on direcory",
-	"version": "0.1.5",
+	"version": "0.1.6",
 	"publisher": "mondersky",
 	"icon": "docs/tabscolor.png",
 	"repository": {
@@ -45,6 +45,14 @@
 					}
 				},
 				"description": "Automatically color tabs based on their parent folder path. See example on the extension page"
+			  },
+			  "tabsColor.activeTab": {
+				"type": "object",
+				"default": {
+						"backgroundColor":"default",
+						"fontColor":"default"
+				},
+				"description": "Color of the active tab"
 			  }
 			}
 		  },

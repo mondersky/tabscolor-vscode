@@ -1,4 +1,7 @@
 
+## [0.1.6] - 2022-07-01
+
+- active tab color
 ## [0.1.4] - 2022-07-01
 
 - Color on focus fixed
