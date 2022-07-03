@@ -1,4 +1,7 @@
 
+## [0.1.4] - 2022-07-01
+
+- Color on focus fixed
 ## [0.1.1] - 2022-07-01
 
 - Color by filetypes & directories

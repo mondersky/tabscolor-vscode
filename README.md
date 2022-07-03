@@ -40,9 +40,9 @@ The directoy path must be absolute
 
 - change the background color of any tab header using the contextual menu
 
-- change the background color of tabs based on filetypes
+- automatically change the background color of tabs based on filetypes
 
-- change the background color of tabs based on directories
+- automatically change the background color of tabs based on directories
 
 ## This extension can't (yet) :
 
@@ -64,13 +64,22 @@ The directoy path must be absolute
 
 Don't hesitate to contribute to this extension.
 
-## TODO (in progress)
+## TODO 
 
 Add more colors
 
-Add color icons to color options within the contextual menu
+Add color icons to color options in the contextual menu
 
 Allow custom color options
 
 Sort by color button
 
+new setting: active tab color
+
+Allow partial paths when coloring based on directory
+
+new command: set random colors to all open tabs  
+
+new command: clear the color of all open tabs
+
+Add an option on the explorer contextual menu to set colors accoding to the target folder 

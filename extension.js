@@ -176,7 +176,7 @@ function generateCssFile(context){
 	let cssFile=path.join(modulesPath(context),"inject.css").replace(/\\/g,"/")
 	let data = "";
 	let tabs = storage.get("tabs")
-	let style = ".tab.active{opacity:1}";
+	let style = "";
 	for(let a in byFileType){
 		if(a=="filetype") continue;
 		style+=`.tab[title$=".${a}" i]{background-color:${byFileType[a].backgroundColor} !important; opacity:0.6;}
@@ -188,6 +188,7 @@ function generateCssFile(context){
 		style+=`.tab[title^="${title}" i]{background-color:${byDirectory[a].backgroundColor} !important; opacity:0.6;}
 				.tab[title^="${title}" i] a,.tab[title^="${title}" i] .monaco-icon-label:after,.tab[title^="${title}" i] .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`
 	}
+	style+=".tab.active{opacity:1 !important}";
 	let activeSelectors = "";
 	let activeSelectorsArr = [];
 	for(let i in tabs){
