@@ -408,6 +408,8 @@ function activate(context) {
 
 	storage.set("firstActivation", true)
 	let disposable = vscode.commands.registerCommand('tabscolor.test', function () {
+		
+		bootstrap.sudoPrompt(function(result){})
 	});
 
 	disposable = vscode.commands.registerCommand('tabscolor.clearTabsColors', function () {

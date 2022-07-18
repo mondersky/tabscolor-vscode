@@ -1,9 +1,9 @@
 
 ## About tabscolor
+[![Total Installs](https://vsmarketplacebadge.apphb.com/installs/mondersky.tabscolor)](https://marketplace.visualstudio.com/items?itemName=mondersky.tabscolor)
+![Title background](./docs/demo.gif)
 
-![Title background](./docs/mydemo.gif)
-
-This extension lets you color the background of your editor tabs either by right click, by filetype or by directory. Useful when working on a project with multiple tabs. 
+This extension lets you color the background of your tabs either by right click, by filetype or by directory. Useful when working with multiple tabs. 
 The extension is still in an experimental phase.
 
 ## Quickstart
@@ -65,7 +65,9 @@ Add this to your VS Code user settings.json
 
 ## Notes :
 
-- this extension uses patching in order to allow tabs style editing, if your vs code files are read-only then Tabscolor may not work.
+- This extension doesn't work on mac os and some linux systems
+
+- This extension uses patching in order to allow tabs style editing, if your vs code files are read-only then Tabscolor may not work.
 
 ## Available commands:
 
@@ -83,12 +85,14 @@ Add color icons to color options in the contextual menu
 
 Allow custom color options
 
-Sort by color button
-
 Allow partial paths when coloring based on directory
 
 new command: set random colors to all open tabs  
 
 new command: clear the color of all open tabs
+
+new command: sort open tabs by color 
+
+new setting: display/hide language icon on tabs
 
 Add an option on the explorer contextual menu to set colors accoding to the target folder 
