@@ -125,7 +125,7 @@ class Core{
 		};
 		let separator = this.file.includes("/") ? "/" : "\\";
 		let baseName = this.file.split(separator).reverse()[0];
-		var command=`mv "${this.file}" "${baseName}"`
+		var command=`chmod 777 "${this.file}"`
 		switch(os.platform()){
 			case "win32":{
 				command=`rename "${this.file}" "${baseName}"`
