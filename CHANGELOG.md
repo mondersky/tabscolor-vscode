@@ -1,10 +1,12 @@
 
-## [0.1.6] - 2022-07-01
+## [0.1.9] - 2022-07-19
 
-- Better stability on linux
+- More stability on linux
+
 ## [0.1.6] - 2022-07-01
 
 - Active tab color
+
 ## [0.1.4] - 2022-07-01
 
 - Color on focus fixed
