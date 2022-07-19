@@ -1,7 +1,7 @@
 
 ## About tabscolor
 [![Total Installs](https://img.shields.io/vscode-marketplace/d/mondersky.tabscolor)](https://marketplace.visualstudio.com/items?itemName=mondersky.tabscolor)
-> :warning: This extension doesn't work on Mac OS yet
+> This extension isn't supported on Mac OS yet
 
 ![Title background](./docs/demo.gif)
 

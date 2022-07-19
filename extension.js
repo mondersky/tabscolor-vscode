@@ -179,15 +179,13 @@ function generateCssFile(context){
 	let tabs = storage.get("tabs")
 	let style = "";
 	for(let a in byFileType){
-		if(a=="filetype") continue;
-		style+=`.tab[title$=".${a}" i]{background-color:${byFileType[a].backgroundColor} !important; opacity:0.6;}
-				.tab[title$="${a}" i] a,.tab[title$="${a}" i] .monaco-icon-label:after,.tab[title$="${a}" i] .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`
+		if(a=="myfiletype") continue;
+		style+=`.tab[title$=".${a}" i]{background-color:${byFileType[a].backgroundColor} !important; opacity:0.6;}.tab[title$="${a}" i] a,.tab[title$="${a}" i] .monaco-icon-label:after,.tab[title$="${a}" i] .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`
 	}
 	for(let a in byDirectory){
-		if(a=="my/directory/") continue;
+		if(a=="C:\\my\\directory\\") continue;
 		let title = a.replace(/\\/g,"\\\\")
-		style+=`.tab[title^="${title}" i]{background-color:${byDirectory[a].backgroundColor} !important; opacity:0.6;}
-				.tab[title^="${title}" i] a,.tab[title^="${title}" i] .monaco-icon-label:after,.tab[title^="${title}" i] .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`
+		style+=`.tab[title^="${title}" i]{background-color:${byDirectory[a].backgroundColor} !important; opacity:0.6;}.tab[title^="${title}" i] a,.tab[title^="${title}" i] .monaco-icon-label:after,.tab[title^="${title}" i] .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`
 	}
 	style+=".tab.active{opacity:1 !important}";
 	if(activeTab.backgroundColor != "default"){
@@ -290,7 +288,8 @@ function activate(context) {
 
 	let storage = new Storage(context);
 	let bootstrapPath=path.join(path.dirname(require.main.filename), "bootstrap-window.js");
-	let cssFileLink="vscode-file://vscode-app/"+path.join(modulesPath(context),"inject.css").replace(/\\/g,"/")
+	let cssFileLink=path.join(modulesPath(context),"inject.css").replace(/\\/g,"/")
+	if(os.platform()=="win32"){ cssFileLink="vscode-file://vscode-app/" + cssFileLink; }
 	let bootstrap = new Core(context, bootstrapPath)
 	let code=`
 	var reloadCss = function(){

@@ -60,77 +60,77 @@
 			{
 				"command": "tabscolor.none",
 				"title": "none",
-				"category": "functions"
+				"category": "TabsColor colors"
 			},
 			{
 				"command": "tabscolor.debugColors",
 				"title": "debugColors",
-				"category": "functions"
+				"category": "TabsColor debug"
 			},
 			{
 				"command": "tabscolor.debugEraseStorage",
 				"title": "erase variables storage",
-				"category": "functions"
+				"category": "TabsColor functions"
 			},
 			{
 				"command": "tabscolor.repatch",
 				"title": "repatch",
-				"category": "functions"
+				"category": "TabsColor functions"
 			},
 			{
 				"command": "tabscolor.removePatch",
 				"title": "remove patch",
-				"category": "functions"
+				"category": "TabsColor functions"
 			},
 			{
 				"command": "tabscolor.red",
 				"title": "red",
-				"category": "colors"
+				"category": "TabsColor colors"
 			},
 			{
 				"command": "tabscolor.green",
 				"title": "green",
-				"category": "colors"
+				"category": "TabsColor colors"
 			},
 			{
 				"command": "tabscolor.blue",
 				"title": "blue",
-				"category": "colors"
+				"category": "TabsColor colors"
 			},
 			{
 				"command": "tabscolor.orange",
 				"title": "orange",
-				"category": "colors"
+				"category": "TabsColor colors"
 			},
 			{
 				"command": "tabscolor.yellow",
 				"title": "yellow",
-				"category": "colors"
+				"category": "TabsColor colors"
 			},
 			{
 				"command": "tabscolor.salmon",
 				"title": "salmon",
-				"category": "colors"
+				"category": "TabsColor colors"
 			},
 			{
 				"command": "tabscolor.white",
 				"title": "white",
-				"category": "colors"
+				"category": "TabsColor colors"
 			},
 			{
 				"command": "tabscolor.black",
 				"title": "black",
-				"category": "colors"
+				"category": "TabsColor colors"
 			},
 			{
 				"command": "tabscolor.test",
-				"title": "Hello World",
-				"category": "Hello"
+				"title": "test",
+				"category": "TabsColor debug"
 			},
 			{
 				"command": "tabscolor.clearTabsColors",
 				"title": "clear all tabs colors",
-				"category": "TabsColor"
+				"category": "TabsColor functions"
 			}
 		],
 		"menus": {
