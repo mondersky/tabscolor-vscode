@@ -422,9 +422,47 @@ function activate(context) {
     });
 
 	storage.set("firstActivation", true)
+
+
+	
 	let disposable = vscode.commands.registerCommand('tabscolor.test', function () {
 		
 		bootstrap.sudoPrompt(function(result){})
+	});
+	
+	disposable = vscode.commands.registerCommand('tabscolor.locateTargetFile', function () {
+		// Display the stored tabs colors in console
+		console.log("bootstrap file :"+bootstrapPath);
+		vscode.window.showInformationMessage(bootstrapPath)
+	});
+
+	disposable = vscode.commands.registerCommand('tabscolor.debugMac', function () {
+		var options = {
+			name: 'TabsColor'
+		};
+		
+		vscode.window.showInformationMessage("trying to allow editing of Bootstrap file. Check vs code console for messages ")
+		console.log("Tabscolor: Trying to allow editing of Bootstrap file")
+		let separator = bootstrapPath.includes("/") ? "/" : "\\";
+		let baseName = bootstrapPath.split(separator).reverse()[0];
+		// Find the right command to allow editing of Bootstrap file on MAC
+		// var command=`chmod 777 "${bootstrapPath}"`
+		var command=`chmod a+w "${bootstrapPath}"`
+		console.log("Tabscolor: command : " + command)
+		sudo.exec(command, options,
+		function(error, stdout, stderr) {
+			if (error) {
+				
+				vscode.window.showInformationMessage("command failed")
+				console.error("tabsColor:" +error)
+					throw error;
+			}
+			else{
+				vscode.window.showInformationMessage("command executed successfully. Bootstrap file should be able to get patched now")
+				console.log("Tabscolor: command executed successfully. Bootstrap file should be able to get patched now " )
+			}
+		}
+		);
 	});
 
 	disposable = vscode.commands.registerCommand('tabscolor.clearTabsColors', function () {
