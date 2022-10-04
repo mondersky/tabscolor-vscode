@@ -1,9 +1,10 @@
 
-## About tabscolor
 [![Total Installs](https://img.shields.io/vscode-marketplace/d/mondersky.tabscolor)](https://marketplace.visualstudio.com/items?itemName=mondersky.tabscolor)
 > This extension isn't supported on Mac OS yet
 
-![tabsColor](docs/tabscolor.gif)
+## About tabscolor
+
+![tabsColor preview](https://github.com/mondersky/tabscolor-vscode/raw/master/docs/tabscolor.gif)
 
 This extension lets you color the background of your tabs either by right click, by filetype or by directory. Useful when working with multiple tabs. 
 The extension is still in an experimental phase.

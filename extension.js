@@ -157,89 +157,105 @@ function modulesPath(context) {
 function reloadCss(){
 	vscode.window.showInformationMessage("---tab updated---");
 }
-function generateCssFile(context){
-	let colors={
-		"none":{ background:"transparent",color:"inherit"},
-		"salmon":{ background:"#9d533a",color:"white"},
-		"green":{ background:"#528752",color:"white"},
-		"blue":{ background:"#3498DB",color:"white"},
-		"orange":{ background:"#DC7633",color:"white"},
-		"yellow":{ background:"#F1C40F",color:"black"},
-		"red":{ background:"#C0392B",color:"white"},
-		"black":{ background:"#000000",color:"white"},
-		"white":{ background:"#ffffff",color:"black"},
+
+function formatTitle(title){
+	if(os.platform()!="win32") {
+		let homeDir = os.homedir()+'/';
+		title=title.replace(homeDir,"");
+	}
+	return title;
+}
+
+function generateCssFile(context) {
+	let colors = {
+		"none": { background: "transparent", color: "inherit" },
+		"salmon": { background: "#9d533a", color: "white" },
+		"green": { background: "#528752", color: "white" },
+		"blue": { background: "#3498DB", color: "white" },
+		"orange": { background: "#DC7633", color: "white" },
+		"yellow": { background: "#F1C40F", color: "black" },
+		"red": { background: "#C0392B", color: "white" },
+		"black": { background: "#000000", color: "white" },
+		"white": { background: "#ffffff", color: "black" },
 	}
 	let storage = new Storage(context);
 	let rulesBasedStyle = vscode.workspace.getConfiguration('tabsColor');
 	let byFileType = rulesBasedStyle.byFileType;
 	let byDirectory = rulesBasedStyle.byDirectory;
 	let activeTab = rulesBasedStyle.activeTab;
-	let cssFile=path.join(modulesPath(context),"inject.css").replace(/\\/g,"/")
+	let cssFile = path.join(modulesPath(context), "inject.css")
 	let data = "";
 	let tabs = storage.get("tabs")
 	let style = "";
-	for(let a in byFileType){
-		if(a=="myfiletype") continue;
-		style+=`.tab[title$=".${a}" i]{background-color:${byFileType[a].backgroundColor} !important; opacity:0.6;}.tab[title$="${a}" i] a,.tab[title$="${a}" i] .monaco-icon-label:after,.tab[title$="${a}" i] .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`
+	let homeDir = os.homedir()+'/';
+	for (let a in byFileType) {
+		if (a == "filetype") continue;
+		style += `.tab[title$=".${formatTitle(a)}" i]{background-color:${byFileType[a].backgroundColor} !important; opacity:0.6;}
+				.tab[title$="${formatTitle(a)}" i] a,.tab[title$="${formatTitle(a)}" i] .monaco-icon-label:after,.tab[title$="${formatTitle(a)}" i] .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`
 	}
-	for(let a in byDirectory){
-		if(a=="C:\\my\\directory\\") continue;
-		let title = a.replace(/\\/g,"\\\\")
-		style+=`.tab[title^="${title}" i]{background-color:${byDirectory[a].backgroundColor} !important; opacity:0.6;}.tab[title^="${title}" i] a,.tab[title^="${title}" i] .monaco-icon-label:after,.tab[title^="${title}" i] .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`
+	for (let a in byDirectory) {
+		if (a == "my/directory/") continue;
+		let title = a.replace(/\\/g, "\\\\")
+		style += `.tab[title*="${formatTitle(title)}" i]{background-color:${byDirectory[a].backgroundColor} !important; opacity:0.6;}
+				.tab[title*="${formatTitle(title)}" i] a,.tab[title*="${formatTitle(title)}" i] .monaco-icon-label:after,.tab[title*="${formatTitle(title)}" i] .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`
 	}
-	style+=".tab.active{opacity:1 !important}";
-	if(activeTab.backgroundColor != "default"){
-		style+=`body .tabs-container .tab.active{background-color:${activeTab.backgroundColor} !important; }body .tabs-container .tab.active a,body .tabs-container .tab.active .monaco-icon-label:after,body .tabs-container .tab.active .monaco-icon-label:before{color:${activeTab.fontColor} !important;}`;
+	style += ".tab.active{opacity:1 !important}";
+	if (activeTab.backgroundColor != "default") {
+		style += `body .tabs-container .tab.active{background-color:${activeTab.backgroundColor} !important; }body .tabs-container .tab.active a,body .tabs-container .tab.active .monaco-icon-label:after,body .tabs-container .tab.active .monaco-icon-label:before{color:${activeTab.fontColor} !important;}`;
 	}
 	let activeSelectors = "";
 	let activeSelectorsArr = [];
-	for(let i in tabs){
+	for (let i in tabs) {
 		let _colorTabs = tabs[i];
 		let backgroundSelectors = "";
 		let fontColorSelectors = "";
 		let _background = colors[i].background
 		let _fontColor = colors[i].color
-		let backgroundSelectorsArr = _colorTabs.map(function(a){
-			return `.tab[title="${a}" i]`
+		let backgroundSelectorsArr = _colorTabs.map(function (a) {
+			return `.tab[title*="${formatTitle(a)}" i]`
 		})
-		activeSelectorsArr.push(..._colorTabs.map(function(a){
-			return `.tab[title="${a}" i].active`
+		activeSelectorsArr.push(..._colorTabs.map(function (a) {
+			return `.tab[title*="${formatTitle(a)}" i].active`
 		}))
-		let fontColorSelectorsArr = _colorTabs.map(function(a){
-			return `.tab[title="${a}" i] a,.tab[title="${a}" i] .monaco-icon-label:after,.tab[title="${a}" i] .monaco-icon-label:before`
+		let fontColorSelectorsArr = _colorTabs.map(function (a) {
+			return `.tab[title*="${formatTitle(a)}" i] a,.tab[title="${formatTitle(a)}" i] .monaco-icon-label:after,.tab[title*="${formatTitle(a)}" i] .monaco-icon-label:before`
 		})
-		if(backgroundSelectorsArr.length > 0){
-			backgroundSelectors = backgroundSelectorsArr.join(",")+`{background-color:${_background} !important; opacity:0.6;}`
+		if (backgroundSelectorsArr.length > 0) {
+			backgroundSelectors = backgroundSelectorsArr.join(",") + `{background-color:${_background} !important; opacity:0.6;}`
 		}
-		
-		if(fontColorSelectorsArr.length > 0){
-			fontColorSelectors = fontColorSelectorsArr.join(",")+`{color:${_fontColor} !important;}`
+  
+		if (fontColorSelectorsArr.length > 0) {
+			fontColorSelectors = fontColorSelectorsArr.join(",") + `{color:${_fontColor} !important;}`
 		}
-		style += backgroundSelectors+fontColorSelectors
+		style += backgroundSelectors + fontColorSelectors
 	}
-	if(activeSelectorsArr.length > 0){
-		activeSelectors = activeSelectorsArr.join(",")+`{opacity:1;}`
+	if (activeSelectorsArr.length > 0) {
+		activeSelectors = activeSelectorsArr.join(",") + `{opacity:1;}`
 	}
 	style += activeSelectors;
 	let dirExists = fs.existsSync(modulesPath(context));
-	if (! dirExists){
-		let test = fs.mkdirSync(modulesPath(context),{ recursive: true });
+	if (!dirExists) {
+		let test = fs.mkdirSync(modulesPath(context), { recursive: true });
+		console.log("css", test)
 	}
+  
+	console.log("file", cssFile)
 	if (fs.existsSync(cssFile)) {
 		fs.writeFileSync(cssFile, style);
 	}
-	else{
+	else {
 		fs.appendFile(cssFile, style, function (err) {
-		if (err) {
-			vscode.window
-			.showInformationMessage(
-			  `Could not create a css file. tabscolor won't be able to change your tabs color`,
-			)
-			throw err
-		};
-	  });
+			if (err) {
+				vscode.window
+					.showInformationMessage(
+						`Could not create a css file. tabscolor won't be able to change your tabs color`,
+					)
+				throw err
+			};
+		});
 	}
-}
+ }
+ 
 function setColor(context, color, title){
 		let storage = new Storage(context);
 		if(storage.get("patchedBefore")){
@@ -294,7 +310,7 @@ function activate(context) {
 	let code=`
 	var reloadCss = function(){
 		let tabsCss=document.getElementById("tabscss");
-		tabsCss.href=tabsCss.href.replace(/\\?refresh=\d/,"")+"?refresh="+Math.floor(Math.random() * 11)
+		tabsCss.href=tabsCss.href.replace(/\\?refresh=\\d/,"")+"?refresh="+Math.floor(Math.random() * 999999999999)
 	}
 	var createCss = function(){
 		let head = document.getElementsByTagName('head')[0];
