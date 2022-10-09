@@ -68,6 +68,9 @@ class Core{
 		this.initialContent = this.fileContent;
 		this.file = filePath
 	}
+	exists(){
+		return fs.existsSync(this.file)
+	}
 	startPatch(patchName, isReg = false){
 		let patchString = `
 		/* startpatch ${patchName} */
@@ -305,12 +308,26 @@ function promptRestartAfterUpdate() {
 		`VS Code files change detected. Restart VS Code (not just reload) in order for tabscolor to work.`,
 	  )
   }
-function activate(context) {
 
+function activate(context) {
 	let storage = new Storage(context);
-	let bootstrapPath=path.join(path.dirname(require.main.filename), "vs/workbench/workbench.desktop.main.nls.js");
+	if(os.type() == "Darwin" && storage.get("mac dialog")!==true){
+		vscode.window
+		.showInformationMessage("tabsColor may not work on Mac OS systems", "Don't show this again")
+		.then(answer => {
+			if (answer === "Don't show this again") {
+				storage.set("mac dialog", true)
+			}
+		})
+	}
+		
 	let cssFileLink=path.join(modulesPath(context),"inject.css").replace(/\\/g,"/")
 	if(os.platform()=="win32"){ cssFileLink="vscode-file://vscode-app/" + cssFileLink; }
+	let bootstrapPath=path.join(path.dirname(require.main.filename), "vs/workbench/workbench.desktop.main.nls.js");
+	if(!fs.existsSync(bootstrapPath)){
+		bootstrapPath=path.join(path.dirname(require.main.filename), "bootstrap-window.js");
+
+	}
 	let bootstrap = new Core(context, bootstrapPath)
 	let code=`
 	function reloadCss(){
