@@ -69,7 +69,9 @@ class Core{
 		this.file = filePath
 	}
 	startPatch(patchName, isReg = false){
-		let patchString = `/* startpatch ${patchName} */`;
+		let patchString = `
+		/* startpatch ${patchName} */
+		`;
 		if(isReg) patchString = patchString.replace(/\*/g, "\\*")
 		return patchString
 	}
@@ -95,7 +97,9 @@ class Core{
 		return this.fileContent.includes(this.startPatch(patchName))
 	}
 	endPatch(patchName, isReg = false){
-		let patchString = `/* endpatch ${patchName} */`;
+		let patchString = `
+		/* endpatch ${patchName} */
+		`;
 		if(isReg) patchString = patchString.replace(/\*/g, "\\*")
 		return patchString
 	}
@@ -107,7 +111,7 @@ class Core{
 	}
 	add(patchName, code){
 		let enclosedCode = `${this.startPatch(patchName)} ${code} ${this.endPatch(patchName)}`;
-		this.fileContent = this.fileContent+" "+enclosedCode;
+		this.fileContent = " "+enclosedCode+ " " +this.fileContent;
 		return this;
 	}
 	empty(){
@@ -115,6 +119,7 @@ class Core{
 		this.initialContent = ""
 	}
 	write(){
+		console.log(this.fileContent);
 		fs.writeFileSync(this.file, this.fileContent)
 		this.initialContent = this.fileContent
 	}
@@ -303,16 +308,16 @@ function promptRestartAfterUpdate() {
 function activate(context) {
 
 	let storage = new Storage(context);
-	let bootstrapPath=path.join(path.dirname(require.main.filename), "bootstrap-window.js");
+	let bootstrapPath=path.join(path.dirname(require.main.filename), "vs/workbench/workbench.desktop.main.nls.js");
 	let cssFileLink=path.join(modulesPath(context),"inject.css").replace(/\\/g,"/")
 	if(os.platform()=="win32"){ cssFileLink="vscode-file://vscode-app/" + cssFileLink; }
 	let bootstrap = new Core(context, bootstrapPath)
 	let code=`
-	var reloadCss = function(){
+	function reloadCss(){
 		let tabsCss=document.getElementById("tabscss");
-		tabsCss.href=tabsCss.href.replace(/\\?refresh=\\d/,"")+"?refresh="+Math.floor(Math.random() * 999999999999)
+		tabsCss.href=tabsCss.href.replace(/\\?refresh=(\\d)*/,"")+"?refresh="+Math.floor(Math.random() * 999999999999)
 	}
-	var createCss = function(){
+	function createCss(){
 		let head = document.getElementsByTagName('head')[0];
 				let link = document.createElement('link');
 				link.rel = 'stylesheet';
@@ -323,7 +328,7 @@ function activate(context) {
 				head.appendChild(link);
 		return document.getElementById('tabscss') != null
 	}
-	var domInsert = function (element, callback=0) {
+	function domInsert (element, callback=0) {
 		var listen = (function(){
 			var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 			return function( obj, callback ){
@@ -347,7 +352,9 @@ function activate(context) {
 				callback(addedNodes)
 		});
 	};
-	document.addEventListener("DOMContentLoaded", function(event) {
+	
+	document.addEventListener('readystatechange', function(){
+		if(document.readyState=="complete"){
 		setTimeout(function(){
 			domInsert(document, function(appeared){
 				let updatePopup = appeared.filter(function(a){
@@ -370,7 +377,9 @@ function activate(context) {
 				clearInterval(cssCreateProc)
 			}
 		},500)
-	})`
+	}
+	})
+	`
 	
 	if(!bootstrap.hasPatch("watcher")){
 		if(bootstrap.isReadOnly() && !bootstrap.chmod()){
@@ -426,8 +435,9 @@ function activate(context) {
 
 	
 	let disposable = vscode.commands.registerCommand('tabscolor.test', function () {
-		
-		bootstrap.sudoPrompt(function(result){})
+		console.log("test begin");
+		bootstrap.remove("watcher").add("watcher", code).write()
+		// bootstrap.sudoPrompt(function(result){})
 	});
 	
 	disposable = vscode.commands.registerCommand('tabscolor.locateTargetFile', function () {
