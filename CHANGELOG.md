@@ -1,4 +1,7 @@
 
+## [0.1.22] - 2022-09-10
+
+- Compatible with vs code 1.72.0
 ## [0.1.20] - 2022-07-19
 
 - More stability on linux

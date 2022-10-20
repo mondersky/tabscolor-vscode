@@ -1,8 +1,8 @@
 {
 	"name": "tabscolor",
-	"displayName": "Tabs color",
+	"displayName": "Tabs color[Deprecated]",
 	"description": "Color any tab by right click, based on file type or based on direcory",
-	"version": "0.1.21",
+	"version": "0.1.24",
 	"publisher": "mondersky",
 	"icon": "docs/tabscolor.png",
 	"repository": {

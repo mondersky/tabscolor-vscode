@@ -311,6 +311,7 @@ function promptRestartAfterUpdate() {
 
 function activate(context) {
 	let storage = new Storage(context);
+
 	if(os.type() == "Darwin" && storage.get("mac dialog")!==true){
 		vscode.window
 		.showInformationMessage("tabsColor may not work on Mac OS systems", "Don't show this again")
@@ -320,19 +321,27 @@ function activate(context) {
 			}
 		})
 	}
-		
+
+	if( storage.get("deprecated dialog")==true){
+		vscode.window
+		.showInformationMessage("tabsColor is Back. ", "ok")
+		.then(answer => {
+			if (answer === "ok") {
+				storage.set("deprecated dialog", false)
+			}
+		})
+	}
 	let cssFileLink=path.join(modulesPath(context),"inject.css").replace(/\\/g,"/")
 	if(os.platform()=="win32"){ cssFileLink="vscode-file://vscode-app/" + cssFileLink; }
-	let bootstrapPath=path.join(path.dirname(require.main.filename), "vs/workbench/workbench.desktop.main.nls.js");
+	let bootstrapPath=path.join(path.dirname(require.main.filename), "vs/workbench/workbench.desktop.main.js");
 	if(!fs.existsSync(bootstrapPath)){
 		bootstrapPath=path.join(path.dirname(require.main.filename), "bootstrap-window.js");
-
 	}
 	let bootstrap = new Core(context, bootstrapPath)
 	let code=`
 	function reloadCss(){
 		let tabsCss=document.getElementById("tabscss");
-		tabsCss.href=tabsCss.href.replace(/\\?refresh=(\\d)*/,"")+"?refresh="+Math.floor(Math.random() * 999999999999)
+		tabsCss.href=tabsCss.href.replace(/\\?refresh=(\\d)*/,"")+"?refresh="+Math.floor(Math.random() * 999999999999);
 	}
 	function createCss(){
 		let head = document.getElementsByTagName('head')[0];
@@ -366,7 +375,7 @@ function activate(context) {
 			var addedNodes = []
 			m.forEach(record => record.addedNodes.length & addedNodes.push(...record.addedNodes))
 			if(callback!=0)
-				callback(addedNodes)
+				callback(addedNodes);
 		});
 	};
 	
@@ -375,30 +384,33 @@ function activate(context) {
 		setTimeout(function(){
 			domInsert(document, function(appeared){
 				let updatePopup = appeared.filter(function(a){
-					return a.textContent.trim().includes("---tab updated---")
+					return a.textContent.trim().includes("---tab updated---");
 				})
 				if(updatePopup.length>0){
 					updatePopup.forEach(function(a){
 						if(updatePopup && typeof updatePopup!="string"){
 							if(a.classList && !a.classList.contains("notifications-toasts"))
-								a.remove()
+								a.remove();
 						}
 					})
-					reloadCss()
+					reloadCss();
 				}
 				
 			})
 		},1000)
 		var cssCreateProc = setInterval(function(){
 			if(createCss()){
-				clearInterval(cssCreateProc)
+				clearInterval(cssCreateProc);
 			}
-		},500)
+		},500);
 	}
-	})
+	});
 	`
 	
 	if(!bootstrap.hasPatch("watcher")){
+			vscode.window
+			.showInformationMessage(`After restart you may get the message "Your Code installation is corrupt..." click on the gear icon and choose "don't show again" `)
+			
 		if(bootstrap.isReadOnly() && !bootstrap.chmod()){
 				bootstrap.sudoPrompt(function(result){
 					if(result){
@@ -435,6 +447,7 @@ function activate(context) {
 		storage.set("firstActivation", true)
 	}
 	if(storage.get("firstActivation")){
+		
 		generateCssFile(context)
 		reloadCss();
 		storage.set("secondActivation", true)
