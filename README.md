@@ -6,7 +6,7 @@
 
 ## About tabscolor
 
-![tabsColor preview](https://github.com/mondersky/tabscolor-vscode/raw/master/docs/dmo.gif)
+![tabsColor preview](https://github.com/mondersky/tabscolor-vscode/raw/master/docs/extension.gif)
 
 This extension lets you color the background of your tabs either by right click, by filetype or by directory. Useful when working with multiple tabs. 
 The extension is still in an experimental phase.

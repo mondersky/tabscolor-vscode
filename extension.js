@@ -198,18 +198,18 @@ function generateCssFile(context) {
 	let homeDir = os.homedir()+'/';
 	for (let a in byFileType) {
 		if (a == "filetype") continue;
-		style += `.tab[title$=".${formatTitle(a)}" i]{background-color:${byFileType[a].backgroundColor} !important; opacity:0.6;}
-				.tab[title$="${formatTitle(a)}" i] a,.tab[title$="${formatTitle(a)}" i] .monaco-icon-label:after,.tab[title$="${formatTitle(a)}" i] .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`
+		style += `.tab[title$=".${formatTitle(a)}" i]:not(:hover){background-color:${byFileType[a].backgroundColor} !important; opacity:0.6;}
+				.tab[title$="${formatTitle(a)}" i]:not(:hover) a,.tab[title$="${formatTitle(a)}" i]:not(:hover) .monaco-icon-label:after,.tab[title$="${formatTitle(a)}" i]:not(:hover) .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`
 	}
 	for (let a in byDirectory) {
 		if (a == "my/directory/") continue;
 		let title = a.replace(/\\/g, "\\\\")
-		style += `.tab[title*="${formatTitle(title)}" i]{background-color:${byDirectory[a].backgroundColor} !important; opacity:0.6;}
-				.tab[title*="${formatTitle(title)}" i] a,.tab[title*="${formatTitle(title)}" i] .monaco-icon-label:after,.tab[title*="${formatTitle(title)}" i] .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`
+		style += `.tab[title*="${formatTitle(title)}" i]:not(:hover){background-color:${byDirectory[a].backgroundColor} !important; opacity:0.6;}
+				.tab[title*="${formatTitle(title)}" i]:not(:hover) a,.tab[title*="${formatTitle(title)}" i]:not(:hover) .monaco-icon-label:after,.tab[title*="${formatTitle(title)}" i]:not(:hover) .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`
 	}
 	style += ".tab.active{opacity:1 !important}";
 	if (activeTab.backgroundColor != "default") {
-		style += `body .tabs-container .tab.active{background-color:${activeTab.backgroundColor} !important; }body .tabs-container .tab.active a,body .tabs-container .tab.active .monaco-icon-label:after,body .tabs-container .tab.active .monaco-icon-label:before{color:${activeTab.fontColor} !important;}`;
+		style += `body .tabs-container .tab.active:not(:hover){background-color:${activeTab.backgroundColor} !important; }body .tabs-container .tab.active:not(:hover) a,body .tabs-container .tab.active:not(:hover) .monaco-icon-label:after,body .tabs-container .tab.active:not(:hover) .monaco-icon-label:before{color:${activeTab.fontColor} !important;}`;
 	}
 	let activeSelectors = "";
 	let activeSelectorsArr = [];
@@ -226,7 +226,7 @@ function generateCssFile(context) {
 			return `.tab[title*="${formatTitle(a)}" i].active`
 		}))
 		let fontColorSelectorsArr = _colorTabs.map(function (a) {
-			return `.tab[title*="${formatTitle(a)}" i] a,.tab[title="${formatTitle(a)}" i] .monaco-icon-label:after,.tab[title*="${formatTitle(a)}" i] .monaco-icon-label:before`
+			return `.tab[title*="${formatTitle(a)}" i]:not(:hover) a,.tab[title="${formatTitle(a)}" i]:not(:hover) .monaco-icon-label:after,.tab[title*="${formatTitle(a)}" i]:not(:hover) .monaco-icon-label:before`
 		})
 		if (backgroundSelectorsArr.length > 0) {
 			backgroundSelectors = backgroundSelectorsArr.join(",") + `{background-color:${_background} !important; opacity:0.6;}`
