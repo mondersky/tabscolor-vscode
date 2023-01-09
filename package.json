@@ -2,7 +2,7 @@
 	"name": "tabscolor",
 	"displayName": "Tabs color",
 	"description": "Color any tab by right click, based on file type or based on direcory",
-	"version": "0.1.28",
+	"version": "0.1.29",
 	"publisher": "mondersky",
 	"icon": "docs/tabscolor.png",
 	"repository": {
@@ -19,43 +19,47 @@
 		"onStartupFinished"
 	],
 	"keywords": [
-		"tab" , "color", "highlight" , "filetype", "regex"
+		"tab",
+		"color",
+		"highlight",
+		"filetype",
+		"regex"
 	],
 	"main": "./extension.js",
 	"contributes": {
 		"configuration": {
 			"title": "TabsColor",
 			"properties": {
-			  "tabsColor.byFileType": {
-				"type": "object",
-				"default": {
-					"myfiletype":{
-						"backgroundColor":"red",
-						"fontColor":"white"
-					}
+				"tabsColor.byFileType": {
+					"type": "object",
+					"default": {
+						"myfiletype": {
+							"backgroundColor": "red",
+							"fontColor": "white"
+						}
+					},
+					"description": "Automatically color tabs based on their file type. See example on the extension page "
 				},
-				"description": "Automatically color tabs based on their file type. See example on the extension page "
-			  },
-			  "tabsColor.byDirectory": {
-				"type": "object",
-				"default": {
-					"C:\\my\\directory\\":{
-						"backgroundColor":"#ffffff",
-						"fontColor":"#000000"
-					}
+				"tabsColor.byDirectory": {
+					"type": "object",
+					"default": {
+						"C:\\my\\directory\\": {
+							"backgroundColor": "#ffffff",
+							"fontColor": "#000000"
+						}
+					},
+					"description": "Automatically color tabs based on their parent folder path. See example on the extension page"
 				},
-				"description": "Automatically color tabs based on their parent folder path. See example on the extension page"
-			  },
-			  "tabsColor.activeTab": {
-				"type": "object",
-				"default": {
-						"backgroundColor":"default",
-						"fontColor":"default"
-				},
-				"description": "Color of the active tab"
-			  }
+				"tabsColor.activeTab": {
+					"type": "object",
+					"default": {
+						"backgroundColor": "default",
+						"fontColor": "default"
+					},
+					"description": "Color of the active tab"
+				}
 			}
-		  },
+		},
 		"commands": [
 			{
 				"command": "tabscolor.none",
@@ -141,6 +145,26 @@
 				"command": "tabscolor.clearTabsColors",
 				"title": "clear all tabs colors",
 				"category": "TabsColor functions"
+			},
+			{
+				"command": "tabscolor.randomColor",
+				"title": "random color",
+				"category": "TabsColor colors"
+			},
+			{
+				"command": "tabscolor.addColor",
+				"title": "add color",
+				"category": "TabsColor functions"
+			},
+			{
+				"command": "tabscolor.more",
+				"title": "more",
+				"category": "TabsColor colors"
+			},
+			{
+				"command": "tabscolor.deleteCustomColor",
+				"title": "delete custom color",
+				"category": "TabsColor functions"
 			}
 		],
 		"menus": {
@@ -186,6 +210,22 @@
 				},
 				{
 					"command": "tabscolor.none",
+					"group": "functions"
+				},
+				{
+					"command": "tabscolor.randomColor",
+					"group": "navigation"
+				},
+				{
+					"command": "tabscolor.addColor",
+					"group": "functions"
+				},
+				{
+					"command": "tabscolor.more",
+					"group": "functions"
+				},
+				{
+					"command": "tabscolor.deleteCustomColor",
 					"group": "functions"
 				}
 			]
