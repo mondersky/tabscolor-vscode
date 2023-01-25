@@ -88,7 +88,7 @@ Add more colors
 
 Add color icons to color options in the contextual menu
 
-~~Allow custom color options~~  ✓[https://github.com/ntkhang03](ntkhang03
+~~Allow custom color options~~  ✓[https://github.com/ntkhang03](ntkhang03)
 
 Allow partial paths when coloring based on directory
 
