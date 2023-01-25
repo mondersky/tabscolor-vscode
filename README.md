@@ -1,5 +1,5 @@
 
-[![Total Installs](https://vsmarketplacebadge.apphb.com/installs-short/mondersky.tabscolor.svg)](https://marketplace.visualstudio.com/items?itemName=mondersky.tabscolor)
+[![Total Installs](https://img.shields.io/visual-studio-marketplace/i/mondersky.tabscolor)](https://marketplace.visualstudio.com/items?itemName=mondersky.tabscolor)
 > This extension isn't supported on Mac OS yet
 
 > **IMPORTANT NOTE : AFTER INSTALLING TABSCOLOR YOU MAY GET THE POPUP "YOUR CODE INSTALLATION IS CORRUPT..." UPON RESTART. JUST CLICK ON THE GEAR ICON AND CHOOSE DON'T SHOW AGAIN.**
@@ -88,7 +88,7 @@ Add more colors
 
 Add color icons to color options in the contextual menu
 
-Allow custom color options
+~~Allow custom color options~~ ✓(https://github.com/ntkhang03)[ntkhang03]
 
 Allow partial paths when coloring based on directory
 

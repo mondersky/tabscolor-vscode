@@ -2,7 +2,7 @@
 	"name": "tabscolor",
 	"displayName": "Tabs color",
 	"description": "Color any tab by right click, based on file type or based on direcory",
-	"version": "0.1.29",
+	"version": "0.1.30",
 	"publisher": "mondersky",
 	"icon": "docs/tabscolor.png",
 	"repository": {

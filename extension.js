@@ -732,11 +732,11 @@ function activate(context) {
 					<p>Preview Color</p>
 					<div style="display: flex; flex-direction: row; ">
 						<div class="preview-f" style="width: 200px; height: 37px; background-color: #fe39c9; color: #fff; display: flex; justify-content: center; align-items: center; margin-right: 2px;">
-							<p>focuse</p>
+							<p>focused</p>
 						</div>
 						
 						<div class="preview-uf" style="width: 200px; height: 37px; background-color: #fe39c9; color: #fff; display: flex; justify-content: center; align-items: center; opacity: 0.6;">
-							<p>unfocuse</p>
+							<p>unfocused</p>
 						</div>
 					</div>
 				</div>
