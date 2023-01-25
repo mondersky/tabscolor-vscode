@@ -1,4 +1,7 @@
 
+## [0.1.30] - 2022-09-10
+
+- new feature: custom color 
 ## [0.1.22] - 2022-09-10
 
 - Compatible with vs code 1.72.0
