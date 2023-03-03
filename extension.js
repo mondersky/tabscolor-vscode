@@ -1,13 +1,10 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
-const fs = require('fs');
 const path = require("path");
 const sudo = require('sudo-prompt');
 const os = require("os");
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-
+const fs = require('fs');
+const Core = require("./modules/core.js");
+const Storage = require("./modules/storage.js");
 /**
  * @param {vscode.ExtensionContext} context
  */
@@ -15,164 +12,7 @@ const os = require("os");
 const tabsColorLog = vscode.window.createOutputChannel("Tabs Color");
 let storage_ = null;
 
-class Storage {
-  constructor(context) {
-    this.storage = context.globalState;
-  }
-  set(key, value) {
-    this.storage.update(key, value);
-    storage_ = this.storage;
-  }
 
-  add(key, value) {
-    let data = this.storage.get(key);
-    if (!data) {
-      data = [];
-    }
-    data.push(value);
-    this.set(key, data);
-  }
-  addTabColor(color, title) {
-    let tabs = this.get("tabs");
-    if (!tabs) tabs = {};
-    if (!tabs[color]) {
-      tabs[color] = [];
-    }
-    for (const i in tabs) {
-      const _tabsColor = tabs[i];
-      tabs[i] = _tabsColor.filter(function (a) {
-        return a != title;
-      });
-    }
-    tabs[color].push(title);
-    this.set("tabs", tabs);
-  }
-  removeTabColor(title) {
-    const tabs = this.get("tabs");
-    for (const i in tabs) {
-      const _tabsColor = tabs[i];
-      tabs[i] = _tabsColor.filter(function (a) {
-        return a != title;
-      });
-    }
-    this.set("tabs", tabs);
-  }
-  addCustomColor(color) {
-    const colors = this.get("customColors") || {};
-    const colorName = Object.keys(color)[0];
-    colors[colorName] = {
-      background: color[colorName].background,
-      color: color[colorName].color
-    };
-    this.set("customColors", colors);
-  }
-  removeCustomColor(colorName) {
-    const colors = this.get("customColors") || {};
-    delete colors[colorName];
-    this.set("customColors", colors);
-  }
-  emptyTabs() {
-    this.set("tabs", {});
-  }
-  get(key) {
-    return this.storage.get(key);
-  }
-}
-
-
-class Core {
-
-  constructor(context, filePath) {
-    this.context = context;
-    this.fileContent = fs.readFileSync(filePath, "utf8");
-    this.initialContent = this.fileContent;
-    this.file = filePath;
-  }
-  exists() {
-    return fs.existsSync(this.file);
-  }
-  startPatch(patchName, isReg = false) {
-    let patchString = `
-		/* startpatch ${patchName} */
-		`;
-    if (isReg) patchString = patchString.replace(/\*/g, "\\*");
-    return patchString;
-  }
-  isReadOnly() {
-    try {
-      fs.writeFileSync(this.file, this.initialContent);
-    }
-    catch (e) {
-      return true;
-    }
-  }
-  chmod() {
-    try {
-      fs.chmodSync(this.file, 0o700);
-    }
-    catch (e) {
-      console.log("Error Code:", e);
-      return false;
-    }
-    return true;
-  }
-  hasPatch(patchName) {
-    return this.fileContent.includes(this.startPatch(patchName));
-  }
-  endPatch(patchName, isReg = false) {
-    let patchString = `
-		/* endpatch ${patchName} */
-		`;
-    if (isReg) patchString = patchString.replace(/\*/g, "\\*");
-    return patchString;
-  }
-  remove(patchName) {
-    const regString = `(${this.startPatch(patchName, true)})[^]*(${this.endPatch(patchName, true)})`;
-    const reg = new RegExp(regString);
-    this.fileContent = this.fileContent.replace(reg, "");
-    return this;
-  }
-  add(patchName, code) {
-    const enclosedCode = `${this.startPatch(patchName)} ${code} ${this.endPatch(patchName)}`;
-    this.fileContent = " " + enclosedCode + " " + this.fileContent;
-    return this;
-  }
-  empty() {
-    fs.writeFileSync(this.file, "");
-    this.initialContent = "";
-  }
-  write() {
-    console.log(this.fileContent);
-    fs.writeFileSync(this.file, this.fileContent);
-    this.initialContent = this.fileContent;
-  }
-  sudoPrompt(func) {
-
-    const options = {
-      name: 'TabsColor'
-    };
-    const separator = this.file.includes("/") ? "/" : "\\";
-    const baseName = this.file.split(separator).reverse()[0];
-    let command = `chmod 777 "${this.file}"`;
-    switch (os.platform()) {
-      case "win32": {
-        command = `rename "${this.file}" "${baseName}"`;
-      }
-        break;
-    }
-    sudo.exec(command, options,
-      function (error, stdout, stderr) {
-        if (error) {
-          func(false);
-          throw error;
-        }
-        else {
-          func(true);
-        }
-      }
-    );
-  }
-}
 
 function modulesPath(context) {
   return path.join(context.globalStoragePath, "modules");
@@ -217,18 +57,18 @@ function generateCssFile(context) {
 
   for (const a in byFileType) {
     if (a == "filetype") continue;
-    style += `.tab[title$=".${formatTitle(a)}" i]:not(:hover){background-color:${byFileType[a].backgroundColor} !important; opacity:${byFileType[a].opacity || "0.6"};}
-				.tab[title$="${formatTitle(a)}" i]:not(:hover) a,.tab[title$="${formatTitle(a)}" i]:not(:hover) .monaco-icon-label:after,.tab[title$="${formatTitle(a)}" i]:not(:hover) .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`;
+    style += `.tab[title$=".${formatTitle(a)}" i]{background-color:${byFileType[a].backgroundColor} !important; opacity:${byFileType[a].opacity || "0.6"};}
+				.tab[title$="${formatTitle(a)}" i] a,.tab[title$="${formatTitle(a)}" i] .monaco-icon-label:after,.tab[title$="${formatTitle(a)}" i] .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`;
   }
   for (const a in byDirectory) {
     if (a == "my/directory/") continue;
     const title = a.replace(/\\/g, "\\\\");
-    style += `.tab[title*="${formatTitle(title)}" i]:not(:hover){background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || "0.6"};}
-				.tab[title*="${formatTitle(title)}" i]:not(:hover) a,.tab[title*="${formatTitle(title)}" i]:not(:hover) .monaco-icon-label:after,.tab[title*="${formatTitle(title)}" i]:not(:hover) .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`;
+    style += `.tab[title*="${formatTitle(title)}" i]{background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || "0.6"};}
+				.tab[title*="${formatTitle(title)}" i] a,.tab[title*="${formatTitle(title)}" i] .monaco-icon-label:after,.tab[title*="${formatTitle(title)}" i] .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`;
   }
   style += ".tab.active{opacity:1 !important}";
   if (activeTab.backgroundColor != "default") {
-    style += `body .tabs-container .tab.active:not(:hover){background-color:${activeTab.backgroundColor} !important; }body .tabs-container .tab.active:not(:hover) a,body .tabs-container .tab.active:not(:hover) .monaco-icon-label:after,body .tabs-container .tab.active:not(:hover) .monaco-icon-label:before{color:${activeTab.fontColor} !important;}`;
+    style += `body .tabs-container .tab.active{background-color:${activeTab.backgroundColor} !important; }body .tabs-container .tab.active a,body .tabs-container .tab.active .monaco-icon-label:after,body .tabs-container .tab.active .monaco-icon-label:before{color:${activeTab.fontColor} !important;}`;
   }
   let activeSelectors = "";
   const activeSelectorsArr = [];
@@ -248,7 +88,7 @@ function generateCssFile(context) {
       return `.tab[title*="${formatTitle(a)}" i].active`;
     }));
     const fontColorSelectorsArr = _colorTabs.map(function (a) {
-      return `.tab[title*="${formatTitle(a)}" i]:not(:hover) a,.tab[title="${formatTitle(a)}" i]:not(:hover) .monaco-icon-label:after,.tab[title*="${formatTitle(a)}" i]:not(:hover) .monaco-icon-label:before`;
+      return `.tab[title*="${formatTitle(a)}" i] a,.tab[title="${formatTitle(a)}" i] .monaco-icon-label:after,.tab[title*="${formatTitle(a)}" i] .monaco-icon-label:before`;
     });
     if (backgroundSelectorsArr.length > 0) {
       backgroundSelectors = backgroundSelectorsArr.join(",") + `{background-color:${_background} !important; opacity:${_opacity};}`;
