@@ -167,7 +167,7 @@
 				"category": "TabsColor functions"
 			},
 			{
-				"command": "tabscolor.clearAllColors",
+				"command": "tabscolor.clearOpenTabColors",
 				"title": "Clear All Open Tab Colors",
 				"category": "TabsColor functions"
 			}

@@ -94,7 +94,7 @@ Allow partial paths when coloring based on directory
 
 new command: set random colors to all open tabs  
 
-new command: clear the color of all open tabs
+~~new command: clear the color of all open tabs~~ ✓[kobilee](https://github.com/kobilee)
 
 new command: sort open tabs by color 
 

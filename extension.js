@@ -408,7 +408,7 @@ function activate(context) {
     storage.set("patchedBefore", false);
   });
 
-  disposable = context.subscriptions.push(vscode.commands.registerCommand('tabscolor.clearAllColors', () => {
+  disposable = context.subscriptions.push(vscode.commands.registerCommand('tabscolor.clearOpenTabColors', () => {
     clearOpenTabColors(context);
   }));
 
