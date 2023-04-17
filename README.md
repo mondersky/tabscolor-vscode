@@ -78,6 +78,9 @@ Add this to your VS Code user settings.json
 
 - clear all tabs colors
 
+- clear all open tab colors
+
+- random color
 ## Contributors Welcome
 
 Don't hesitate to contribute to this extension.
@@ -101,3 +104,5 @@ new command: sort open tabs by color
 new setting: display/hide language icon on tabs
 
 Add an option on the explorer contextual menu to set colors accoding to the target folder 
+
+new feature: toggle color of a tab by double click
