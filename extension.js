@@ -157,6 +157,26 @@ function unsetColor(context, title) {
   }
 }
 
+async function clearOpenTabColors(context) {
+  const storage = new Storage(context);
+  const tabs = storage.get("tabs") || {};
+  const editors = vscode.workspace.textDocuments;
+  for (const editor of editors) {
+      const resource = editor.uri;
+      const fileName = resource.fsPath.replace(/\\/g, "\\\\");
+      for (const color in tabs) {
+        if (tabs[color].includes(fileName)) {
+          tabs[color] = tabs[color].filter(tab => tab !== fileName);
+      }
+      }
+  }
+
+  storage.set("tabs", tabs);
+  generateCssFile(context);
+  reloadCss();
+}
+
+
 function promptRestart() {
   vscode.window
     .showInformationMessage(
@@ -388,6 +408,9 @@ function activate(context) {
     storage.set("patchedBefore", false);
   });
 
+  disposable = context.subscriptions.push(vscode.commands.registerCommand('tabscolor.clearAllColors', () => {
+    clearOpenTabColors(context);
+  }));
 
 
   disposable = vscode.commands.registerCommand('tabscolor.none', function (a, b) {
