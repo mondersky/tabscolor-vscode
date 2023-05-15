@@ -4,6 +4,10 @@
 	"description": "Color any tab by right click, based on file type or based on direcory",
 	"version": "0.1.32",
 	"publisher": "mondersky",
+	"extensionKind":
+	[
+		"ui"
+	],
 	"icon": "docs/tabscolor.png",
 	"repository": {
 		"type": "git",
