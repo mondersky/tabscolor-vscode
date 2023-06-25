@@ -1,3 +1,7 @@
+## [0.1.33] - 2023-04-17
+
+Fix remote-ssh issues
+
 ## [0.1.32] - 2023-04-17
 
 new command: clear all open tab colors

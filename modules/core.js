@@ -1,6 +1,6 @@
 const fs = require('fs');
 const os = require("os");
-module.exports = class Core {
+const sudo = require('sudo-prompt');module.exports = class Core {
 
     constructor(context, filePath) {
       this.context = context;
