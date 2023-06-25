@@ -250,6 +250,7 @@
 		"lint": "eslint .",
 		"pretest": "npm run lint",
 		"test": "node ./test/runTest.js",
+		"vscode:prepublish": "npm install",
 		"vscode:uninstall": "node ./src/uninstall.js"
 	},
 	"devDependencies": {
