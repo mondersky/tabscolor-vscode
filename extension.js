@@ -11,7 +11,7 @@ const Storage = require("./modules/storage.js");
 
 const tabsColorLog = vscode.window.createOutputChannel("Tabs Color");
 let storage_ = null;
-
+const vscodeVersion = vscode.version;
 
 
 function modulesPath(context) {
@@ -110,7 +110,9 @@ function generateCssFile(context) {
   if (!dirExists) {
     const test = fs.mkdirSync(modulesPath(context), { recursive: true });
   }
-  return; // until update
+  if(vscodeVersion >= "1.87.0"){
+    return; // until update
+  }
   if (fs.existsSync(cssFile)) {
     fs.writeFileSync(cssFile, style);
   }
@@ -205,7 +207,7 @@ function activate(context) {
       });
   }
 
-  if ( storage.get("under maintainance 3.1.2024") !== true) {
+  if ( storage.get("under maintainance 3.1.2024") !== true && vscodeVersion >= "1.87.0") {
     vscode.window
       .showInformationMessage("tabsColor is undergoing updates to align with the latest version of VS Code. We appreciate your patience during this process.", "Don't show this again")
       .then(answer => {
