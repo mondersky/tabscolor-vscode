@@ -57,14 +57,16 @@ function generateCssFile(context) {
 
   for (const a in byFileType) {
     if (a == "filetype") continue;
-    style += `.tab[title$=".${formatTitle(a)}" i]{background-color:${byFileType[a].backgroundColor} !important; opacity:${byFileType[a].opacity || "0.6"};}
-				.tab[title$="${formatTitle(a)}" i] a,.tab[title$="${formatTitle(a)}" i] .monaco-icon-label:after,.tab[title$="${formatTitle(a)}" i] .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`;
+    let tabSelector = `.tab .monaco-icon-label[aria-label*=".${formatTitle(a)}" i]`;
+    style += `${tabSelector}{background-color:${byFileType[a].backgroundColor} !important; opacity:${byFileType[a].opacity || "0.6"};}
+    ${tabSelector} a,${tabSelector}:after,${tabSelector}:before{color:${byFileType[a].fontColor} !important;}`;
   }
   for (const a in byDirectory) {
     if (a == "my/directory/") continue;
     const title = a.replace(/\\/g, "\\\\");
-    style += `.tab[title*="${formatTitle(title)}" i]{background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || "0.6"};}
-				.tab[title*="${formatTitle(title)}" i] a,.tab[title*="${formatTitle(title)}" i] .monaco-icon-label:after,.tab[title*="${formatTitle(title)}" i] .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`;
+    let tabSelector = `.tab .monaco-icon-label[aria-label*="${formatTitle(title)}" i]`;
+    style += `${tabSelector} i]{background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || "0.6"};}
+    ${tabSelector} a,${tabSelector}:after,${tabSelector}:before{color:${byDirectory[a].fontColor} !important;}`;
   }
   style += ".tab.active{opacity:1 !important}";
   if (activeTab.backgroundColor != "default") {
@@ -82,13 +84,14 @@ function generateCssFile(context) {
     const _fontColor = colorsData[i].color;
     const _opacity = colorsData[i].opacity || "0.6";
     const backgroundSelectorsArr = _colorTabs.map(function (a) {
-      return `.tab[title*="${formatTitle(a)}" i]`;
+      return `.tab .monaco-icon-label[aria-label*="${formatTitle(a)}" i]`;
     });
     activeSelectorsArr.push(..._colorTabs.map(function (a) {
-      return `.tab[title*="${formatTitle(a)}" i].active`;
+      return `.tab .monaco-icon-label[aria-label*="${formatTitle(a)}" i].active`;
     }));
     const fontColorSelectorsArr = _colorTabs.map(function (a) {
-      return `.tab[title*="${formatTitle(a)}" i] a,.tab[title="${formatTitle(a)}" i] .monaco-icon-label:after,.tab[title*="${formatTitle(a)}" i] .monaco-icon-label:before`;
+      let tabSelector = `.tab .monaco-icon-label[aria-label*="${formatTitle(a)}" i]`;
+      return `${tabSelector} a,${tabSelector}:after,${tabSelector}:before`;
     });
     if (backgroundSelectorsArr.length > 0) {
       backgroundSelectors = backgroundSelectorsArr.join(",") + `{background-color:${_background} !important; opacity:${_opacity};}`;
@@ -106,10 +109,8 @@ function generateCssFile(context) {
   const dirExists = fs.existsSync(modulesPath(context));
   if (!dirExists) {
     const test = fs.mkdirSync(modulesPath(context), { recursive: true });
-    console.log("css", test);
   }
-
-  console.log("file", cssFile);
+  return; // until update
   if (fs.existsSync(cssFile)) {
     fs.writeFileSync(cssFile, style);
   }
@@ -200,6 +201,16 @@ function activate(context) {
       .then(answer => {
         if (answer === "Don't show this again") {
           storage.set("mac dialog", true);
+        }
+      });
+  }
+
+  if ( storage.get("under maintainance 3.1.2024") !== true) {
+    vscode.window
+      .showInformationMessage("tabsColor is undergoing updates to align with the latest version of VS Code. We appreciate your patience during this process.", "Don't show this again")
+      .then(answer => {
+        if (answer === "Don't show this again") {
+          storage.set("under maintainance 3.1.2024", true);
         }
       });
   }
