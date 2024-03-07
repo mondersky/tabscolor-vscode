@@ -2,7 +2,7 @@
 	"name": "tabscolor",
 	"displayName": "Tabs color",
 	"description": "Color any tab by right click, target by file extension or directory path",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"publisher": "mondersky",
 	"extensionKind": [
 		"ui"
@@ -13,7 +13,7 @@
 		"url": "https://github.com/mondersky/tabscolor-vscode"
 	},
 	"engines": {
-		"vscode": "^1.68.0"
+		"vscode": "^1.87.0"
 	},
 	"categories": [
 		"Other"

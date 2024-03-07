@@ -87,17 +87,17 @@ Don't hesitate to contribute to this extension.
 
 ## TODO 
 
+~~Allow custom color options~~  (done by ✓[ntkhang03](https://github.com/ntkhang03))
+
+~~new command: clear the color of all open tabs~~ (done by ✓[kobilee](https://github.com/kobilee))
+
 Add more colors
 
 Add color icons to color options in the contextual menu
 
-~~Allow custom color options~~  ✓[ntkhang03](https://github.com/ntkhang03)
-
 Allow partial paths when coloring based on directory
 
 new command: set random colors to all open tabs  
-
-~~new command: clear the color of all open tabs~~ ✓[kobilee](https://github.com/kobilee)
 
 new command: sort open tabs by color 
 

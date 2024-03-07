@@ -30,6 +30,12 @@ function formatTitle(title) {
   return title;
 }
 
+function recordFirstKnownUse(context){
+  const storage = new Storage(context);
+  if (!storage.get("firstKnownUse")) {
+          storage.set("firstKnownUse", new Date().toISOString().slice(0, 10));
+  }
+}
 function generateCssFile(context) {
   const colors = {
     "none": { background: "transparent", color: "inherit" },
@@ -193,7 +199,7 @@ function promptRestartAfterUpdate() {
 
 function activate(context) {
   const storage = new Storage(context);
-
+  recordFirstKnownUse(context)
   if (os.type() == "Darwin" && storage.get("mac dialog") !== true) {
     vscode.window
       .showInformationMessage("tabsColor may not work on Mac OS systems", "Don't show this again")
@@ -204,15 +210,15 @@ function activate(context) {
       });
   }
 
-  // if ( storage.get("under maintainance 3.1.2024") !== true && vscodeVersion >= "1.87.0") {
-  //   vscode.window
-  //     .showInformationMessage("tabsColor is undergoing updates to align with the latest version of VS Code. We appreciate your patience during this process.", "Don't show this again")
-  //     .then(answer => {
-  //       if (answer === "Don't show this again") {
-  //         storage.set("under maintainance 3.1.2024", true);
-  //       }
-  //     });
-  // }
+  if ( storage.get("alert 7.3.2024") !== true && vscodeVersion < "1.87.0") {
+    vscode.window
+      .showInformationMessage("update your vscode to 1.87.0 or higher to enable tabsColor.", "Don't show this again")
+      .then(answer => {
+        if (answer === "Don't show this again") {
+          storage.set("alert 7.3.2024", true);
+        }
+      });
+  }
 
   if (storage.get("deprecated dialog") == true) {
     vscode.window
@@ -334,7 +340,7 @@ function activate(context) {
   }
   if (!bootstrap.hasPatch(patchName)) {
       vscode.window
-        .showInformationMessage(`After restart you may get the message "Your Code installation is corrupt..." click on the gear icon and choose "don't show again" `);
+        .showInformationMessage(`After restart you see the message "Your Code installation is corrupt..." click on the gear icon and choose "don't show again" `);
 
     if (bootstrap.isReadOnly() && !bootstrap.chmod()) {
       bootstrap.sudoPrompt(function (result) {
