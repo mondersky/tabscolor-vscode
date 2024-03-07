@@ -12,7 +12,7 @@ const Storage = require("./modules/storage.js");
 const tabsColorLog = vscode.window.createOutputChannel("Tabs Color");
 let storage_ = null;
 const vscodeVersion = vscode.version;
-
+let patchName = "watcher.2.0"
 
 function modulesPath(context) {
   return path.join(context.globalStoragePath, "modules");
@@ -57,16 +57,16 @@ function generateCssFile(context) {
 
   for (const a in byFileType) {
     if (a == "filetype") continue;
-    let tabSelector = `.tab .monaco-icon-label[aria-label*=".${formatTitle(a)}" i]`;
+    let tabSelector = `.tab[title*=".${formatTitle(a)}" i]`;
     style += `${tabSelector}{background-color:${byFileType[a].backgroundColor} !important; opacity:${byFileType[a].opacity || "0.6"};}
-    ${tabSelector} a,${tabSelector}:after,${tabSelector}:before{color:${byFileType[a].fontColor} !important;}`;
+    ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`;
   }
   for (const a in byDirectory) {
     if (a == "my/directory/") continue;
     const title = a.replace(/\\/g, "\\\\");
-    let tabSelector = `.tab .monaco-icon-label[aria-label*="${formatTitle(title)}" i]`;
-    style += `${tabSelector} i]{background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || "0.6"};}
-    ${tabSelector} a,${tabSelector}:after,${tabSelector}:before{color:${byDirectory[a].fontColor} !important;}`;
+    let tabSelector = `.tab[title*="${formatTitle(title)}" i]`;
+    style += `${tabSelector}{background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || "0.6"};}
+    ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`;
   }
   style += ".tab.active{opacity:1 !important}";
   if (activeTab.backgroundColor != "default") {
@@ -84,14 +84,14 @@ function generateCssFile(context) {
     const _fontColor = colorsData[i].color;
     const _opacity = colorsData[i].opacity || "0.6";
     const backgroundSelectorsArr = _colorTabs.map(function (a) {
-      return `.tab .monaco-icon-label[aria-label*="${formatTitle(a)}" i]`;
+      return `.tab[title*="${formatTitle(a)}" i]`;
     });
     activeSelectorsArr.push(..._colorTabs.map(function (a) {
-      return `.tab .monaco-icon-label[aria-label*="${formatTitle(a)}" i].active`;
+      return `.tab[title*="${formatTitle(a)}" i].active`;
     }));
     const fontColorSelectorsArr = _colorTabs.map(function (a) {
-      let tabSelector = `.tab .monaco-icon-label[aria-label*="${formatTitle(a)}" i]`;
-      return `${tabSelector} a,${tabSelector}:after,${tabSelector}:before`;
+      let tabSelector = `.tab[title*="${formatTitle(a)}" i]`;
+      return `${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before`;
     });
     if (backgroundSelectorsArr.length > 0) {
       backgroundSelectors = backgroundSelectorsArr.join(",") + `{background-color:${_background} !important; opacity:${_opacity};}`;
@@ -109,9 +109,6 @@ function generateCssFile(context) {
   const dirExists = fs.existsSync(modulesPath(context));
   if (!dirExists) {
     const test = fs.mkdirSync(modulesPath(context), { recursive: true });
-  }
-  if(vscodeVersion >= "1.87.0"){
-    return; // until update
   }
   if (fs.existsSync(cssFile)) {
     fs.writeFileSync(cssFile, style);
@@ -207,15 +204,15 @@ function activate(context) {
       });
   }
 
-  if ( storage.get("under maintainance 3.1.2024") !== true && vscodeVersion >= "1.87.0") {
-    vscode.window
-      .showInformationMessage("tabsColor is undergoing updates to align with the latest version of VS Code. We appreciate your patience during this process.", "Don't show this again")
-      .then(answer => {
-        if (answer === "Don't show this again") {
-          storage.set("under maintainance 3.1.2024", true);
-        }
-      });
-  }
+  // if ( storage.get("under maintainance 3.1.2024") !== true && vscodeVersion >= "1.87.0") {
+  //   vscode.window
+  //     .showInformationMessage("tabsColor is undergoing updates to align with the latest version of VS Code. We appreciate your patience during this process.", "Don't show this again")
+  //     .then(answer => {
+  //       if (answer === "Don't show this again") {
+  //         storage.set("under maintainance 3.1.2024", true);
+  //       }
+  //     });
+  // }
 
   if (storage.get("deprecated dialog") == true) {
     vscode.window
@@ -273,17 +270,47 @@ function activate(context) {
 				callback(addedNodes);
 		});
 	};
-	
+	newTabAppeared = function (func) {
+		const targetNode = document;
+		const config = { attributes: true, childList: true, subtree: true };
+		const callback = (mutationList, observer) => {
+		  for (const mutation of mutationList) {
+			if (mutation.type === "childList") {
+				if(mutation.target.classList.contains('tabs-container')){
+					func()
+				}
+			} 
+		  }
+		};
+		const observer = new MutationObserver(callback);
+		observer.observe(targetNode, config);
+	  };
+  targetTabs = function(){
+    let tabs = document.querySelectorAll(".tabs-container .tab")
+    if(tabs){
+      tabs.forEach(function(tab){
+      let tabLabel = tab.querySelector(".tab-label")
+      if(tabLabel){
+        let filePath = tabLabel.getAttribute("aria-label").split(" •")[0]
+        tab.setAttribute("title", filePath)
+      }
+      })
+    }
+    }
 	document.addEventListener('readystatechange', function(){
-		if(document.readyState=="complete"){
+		if(document.readyState == "complete"){
 		setTimeout(function(){
+			targetTabs()
+			newTabAppeared(function(){
+				targetTabs()
+			})
 			domInsert(document, function(appeared){
 				let updatePopup = appeared.filter(function(a){
 					return a.textContent.trim().includes("---tab updated---");
 				})
 				if(updatePopup.length>0){
 					updatePopup.forEach(function(a){
-						if(updatePopup && typeof updatePopup!="string"){
+						if(updatePopup && typeof updatePopup != "string"){
 							if(a.classList && !a.classList.contains("notifications-toasts"))
 								a.remove();
 						}
@@ -301,15 +328,18 @@ function activate(context) {
 	}
 	});
 	`;
-
-  if (!bootstrap.hasPatch("watcher")) {
-    vscode.window
-      .showInformationMessage(`After restart you may get the message "Your Code installation is corrupt..." click on the gear icon and choose "don't show again" `);
+  // remove an old version patch
+  if(bootstrap.hasPatch("watcher")){
+    bootstrap.remove("watcher").write();
+  }
+  if (!bootstrap.hasPatch(patchName)) {
+      vscode.window
+        .showInformationMessage(`After restart you may get the message "Your Code installation is corrupt..." click on the gear icon and choose "don't show again" `);
 
     if (bootstrap.isReadOnly() && !bootstrap.chmod()) {
       bootstrap.sudoPrompt(function (result) {
         if (result) {
-          bootstrap.add("watcher", code).write();
+          bootstrap.add(patchName, code).write();
           if (storage.get("patchedBefore")) {
             storage.set("secondActivation", false);
             storage.set("firstActivation", false);
@@ -325,7 +355,7 @@ function activate(context) {
       });
     }
     else {
-      bootstrap.add("watcher", code).write();
+      bootstrap.add(patchName, code).write();
       if (storage.get("patchedBefore")) {
         storage.set("firstActivation", false);
         storage.set("secondActivation", false);
@@ -360,7 +390,7 @@ function activate(context) {
 
   let disposable = vscode.commands.registerCommand('tabscolor.test', function () {
     console.log("test begin");
-    bootstrap.remove("watcher").add("watcher", code).write();
+    bootstrap.remove(patchName).add(patchName, code).write();
     // bootstrap.sudoPrompt(function(result){})
   });
 
@@ -406,7 +436,7 @@ function activate(context) {
     css.empty();
     generateCssFile(context);
     reloadCss();
-    vscode.window.showInformationMessage('tabs colors cleared. rules based on filetype and directories aren\'t affected ');
+    vscode.window.showInformationMessage('tabs colors cleared. rules based on filetype and directories wont\'t be affected');
   });
 
 
@@ -434,13 +464,13 @@ function activate(context) {
 
 
   disposable = vscode.commands.registerCommand('tabscolor.repatch', function (a, b) {
-    bootstrap.remove("watcher").add("watcher", code).write();
+    bootstrap.remove(patchName).add(patchName, code).write();
     promptRestart();
   });
 
 
   disposable = vscode.commands.registerCommand('tabscolor.removePatch', function (a, b) {
-    bootstrap.remove("watcher").write();
+    bootstrap.remove(patchName).write();
     promptRestart();
   });
 

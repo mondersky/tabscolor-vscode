@@ -62,7 +62,6 @@ const sudo = require('sudo-prompt');module.exports = class Core {
       this.initialContent = "";
     }
     write() {
-      console.log(this.fileContent);
       fs.writeFileSync(this.file, this.fileContent);
       this.initialContent = this.fileContent;
     }

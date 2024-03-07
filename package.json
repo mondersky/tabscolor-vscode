@@ -1,8 +1,8 @@
 {
 	"name": "tabscolor",
 	"displayName": "Tabs color",
-	"description": "Color any tab by right click, based on file type or based on direcory",
-	"version": "0.1.35",
+	"description": "Color any tab by right click, target by file extension or directory path",
+	"version": "0.2.0",
 	"publisher": "mondersky",
 	"extensionKind": [
 		"ui"

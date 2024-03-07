@@ -1,3 +1,7 @@
+## [0.2.0] - 2024-03-07
+
+Fix vs code version 1.87.0 incompatibility
+
 ## [0.1.33] - 2023-04-17
 
 Fix remote-ssh issues
