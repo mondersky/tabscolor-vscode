@@ -1,7 +1,7 @@
 {
 	"name": "tabscolor",
 	"displayName": "Tabs color",
-	"description": "Color any tab by right click, target by file extension or directory path",
+	"description": "Change Visual Studio Code (VsCode) tab color by right click, based on file type or file path",
 	"version": "0.2.1",
 	"publisher": "mondersky",
 	"extensionKind": [

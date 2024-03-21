@@ -15,7 +15,7 @@ The extension is still in an experimental phase.
 
 Install the extension, restart your vs code (not just reload), right click on any tab and select from the color menu
 
-## Set tabs color based on filetypes
+##  customize VSCode tab color by file types
 
 example: 
 ```
@@ -27,7 +27,7 @@ example:
   }
 ```
 Add this to your VS Code user settings.json
-## Set tabs color based on directories
+## customize VSCode tab color by directory path
 
 example:
 ```
@@ -65,8 +65,6 @@ Add this to your VS Code user settings.json
 - change the whole background of the tab page
 
 - change the background color of tabs based on regex
-
-- set custom colors in the contextual menu
 
 ## Notes :
 
