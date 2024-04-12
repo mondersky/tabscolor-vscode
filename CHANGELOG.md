@@ -1,3 +1,6 @@
+## [0.2.2] - 2024-04-12
+
+Fix to tab color not updating on tab move
 ## [0.2.0] - 2024-03-07
 
 Fix vs code version 1.87.0 incompatibility

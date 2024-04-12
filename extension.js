@@ -12,7 +12,7 @@ const Storage = require("./modules/storage.js");
 const tabsColorLog = vscode.window.createOutputChannel("Tabs Color");
 let storage_ = null;
 const vscodeVersion = vscode.version;
-let patchName = "watcher.2.0"
+let patchName = "watcher.2.1"
 
 function modulesPath(context) {
   return path.join(context.globalStoragePath, "modules");
@@ -276,16 +276,14 @@ function activate(context) {
 				callback(addedNodes);
 		});
 	};
-	newTabAppeared = function (func) {
+	tabsChanged = function (func) {
 		const targetNode = document;
 		const config = { attributes: true, childList: true, subtree: true };
 		const callback = (mutationList, observer) => {
 		  for (const mutation of mutationList) {
-			if (mutation.type === "childList") {
 				if(mutation.target.classList.contains('tabs-container')){
 					func()
 				}
-			} 
 		  }
 		};
 		const observer = new MutationObserver(callback);
@@ -307,7 +305,7 @@ function activate(context) {
 		if(document.readyState == "complete"){
 		setTimeout(function(){
 			targetTabs()
-			newTabAppeared(function(){
+			tabsChanged(function(){
 				targetTabs()
 			})
 			domInsert(document, function(appeared){
@@ -334,9 +332,12 @@ function activate(context) {
 	}
 	});
 	`;
-  // remove an old version patch
+  // remove old patches
   if(bootstrap.hasPatch("watcher")){
     bootstrap.remove("watcher").write();
+  }
+  if(bootstrap.hasPatch("watcher.2.0")){
+    bootstrap.remove("watcher.2.0").write();
   }
   if (!bootstrap.hasPatch(patchName)) {
       vscode.window
