@@ -12,7 +12,7 @@ const Storage = require("./modules/storage.js");
 const tabsColorLog = vscode.window.createOutputChannel("Tabs Color");
 let storage_ = null;
 const vscodeVersion = vscode.version;
-let patchName = "watcher.2.1"
+let patchName = "patch.1"
 
 function modulesPath(context) {
   return path.join(context.globalStoragePath, "modules");
@@ -37,6 +37,7 @@ function recordFirstKnownUse(context){
   }
 }
 function generateCssFile(context) {
+  console.log("generate");
   const colors = {
     "none": { background: "transparent", color: "inherit" },
     "salmon": { background: "#9d533a", color: "white" },
@@ -90,6 +91,7 @@ function generateCssFile(context) {
     const _fontColor = colorsData[i].color;
     const _opacity = colorsData[i].opacity || "0.6";
     const backgroundSelectorsArr = _colorTabs.map(function (a) {
+      console.log(a);
       return `.tab[title*="${formatTitle(a)}" i]`;
     });
     activeSelectorsArr.push(..._colorTabs.map(function (a) {
@@ -124,7 +126,7 @@ function generateCssFile(context) {
       if (err) {
         vscode.window
           .showInformationMessage(
-            `Could not create a css file. tabscolor won't be able to change your tabs color`
+            `Could not create a css file. tabscolor is unable to change your tabs color`
           );
         throw err;
       }
@@ -195,6 +197,19 @@ function promptRestartAfterUpdate() {
     .showInformationMessage(
       `VS Code files change detected. Restart VS Code (not just reload) in order for tabscolor to work.`
     );
+}
+
+function getTabTitle(tab){
+  let file = vscode.window.activeTextEditor?.document.fileName;
+  let title = "";
+  if(tab.external?.startsWith("vscode-remote") || tab._formatted?.startsWith("vscode-remote")){
+    title = tab.path;
+  }
+  else{
+    if (tab) file = tab.fsPath;
+    title = file.replace(/\\/g, "\\\\")
+  }
+   return title;
 }
 
 function activate(context) {
@@ -301,8 +316,6 @@ function activate(context) {
       })
     }
     }
-	document.addEventListener('readystatechange', function(){
-		if(document.readyState == "complete"){
 		setTimeout(function(){
 			targetTabs()
 			tabsChanged(function(){
@@ -329,8 +342,6 @@ function activate(context) {
 				clearInterval(cssCreateProc);
 			}
 		},500);
-	}
-	});
 	`;
   // remove old patches
   if(bootstrap.hasPatch("watcher")){
@@ -339,9 +350,12 @@ function activate(context) {
   if(bootstrap.hasPatch("watcher.2.0")){
     bootstrap.remove("watcher.2.0").write();
   }
+  if(bootstrap.hasPatch("watcher.2.1")){
+    bootstrap.remove("watcher.2.1").write();
+  }
   if (!bootstrap.hasPatch(patchName)) {
       vscode.window
-        .showInformationMessage(`After restart you see the message "Your Code installation is corrupt..." click on the gear icon and choose "don't show again" `);
+        .showInformationMessage(`After restart you will see the message "Your Code installation is corrupt..." click on the gear icon and choose "don't show again" `);
 
     if (bootstrap.isReadOnly() && !bootstrap.chmod()) {
       bootstrap.sudoPrompt(function (result) {
@@ -464,9 +478,7 @@ function activate(context) {
 
 
   disposable = vscode.commands.registerCommand('tabscolor.none', function (a, b) {
-    let file = vscode.window.activeTextEditor?.document.fileName;
-    if (a) file = a.fsPath;
-    unsetColor(context, file.replace(/\\/g, "\\\\"));
+    unsetColor(context, getTabTitle(a));
   });
 
 
@@ -481,62 +493,42 @@ function activate(context) {
     promptRestart();
   });
 
+  disposable = vscode.commands.registerCommand('tabscolor.black', function (a, b) {
+    setColor(context, "black", getTabTitle(a));
+  });
 
   disposable = vscode.commands.registerCommand('tabscolor.salmon', function (a, b) {
-    let file = vscode.window.activeTextEditor?.document.fileName;
-    if (a) file = a.fsPath;
-    setColor(context, "salmon", file.replace(/\\/g, "\\\\"));
+    setColor(context, "salmon", getTabTitle(a));
   });
 
 
   disposable = vscode.commands.registerCommand('tabscolor.green', function (a, b) {
-    let file = vscode.window.activeTextEditor?.document.fileName;
-    if (a) file = a.fsPath;
-    setColor(context, "green", file.replace(/\\/g, "\\\\"));
-
+    setColor(context, "green", getTabTitle(a));
   });
 
   disposable = vscode.commands.registerCommand('tabscolor.blue', function (a, b) {
-    let file = vscode.window.activeTextEditor?.document.fileName;
-    if (a) file = a.fsPath;
-    setColor(context, "blue", file.replace(/\\/g, "\\\\"));
-
+    setColor(context, "blue", getTabTitle(a));
   });
 
   disposable = vscode.commands.registerCommand('tabscolor.red', function (a, b) {
-    let file = vscode.window.activeTextEditor?.document.fileName;
-    if (a) file = a.fsPath;
-    setColor(context, "red", file.replace(/\\/g, "\\\\"));
-
+    setColor(context, "red", getTabTitle(a));
   });
 
   disposable = vscode.commands.registerCommand('tabscolor.orange', function (a, b) {
-    let file = vscode.window.activeTextEditor?.document.fileName;
-    if (a) file = a.fsPath;
-    setColor(context, "orange", file.replace(/\\/g, "\\\\"));
+    setColor(context, "orange", getTabTitle(a));
 
   });
+
   disposable = vscode.commands.registerCommand('tabscolor.yellow', function (a, b) {
-    let file = vscode.window.activeTextEditor?.document.fileName;
-    if (a) file = a.fsPath;
-    setColor(context, "yellow", file.replace(/\\/g, "\\\\"));
+    setColor(context, "yellow", getTabTitle(a));
 
   });
-  disposable = vscode.commands.registerCommand('tabscolor.black', function (a, b) {
-    let file = vscode.window.activeTextEditor?.document.fileName;
-    if (a) file = a.fsPath;
-    setColor(context, "black", file.replace(/\\/g, "\\\\"));
 
-  });
   disposable = vscode.commands.registerCommand('tabscolor.white', function (a, b) {
-    let file = vscode.window.activeTextEditor?.document.fileName;
-    if (a) file = a.fsPath;
-    setColor(context, "white", file.replace(/\\/g, "\\\\"));
-
+    setColor(context, "white", getTabTitle(a));
   });
+
   disposable = vscode.commands.registerCommand('tabscolor.randomColor', function (a, b) {
-    let file = vscode.window.activeTextEditor?.document.fileName;
-    if (a) file = a.fsPath;
     const colorNames = Object.keys({ ...storage.get("customColors"), ...storage.get("defaultColors") });
     let colorName;
     do {
@@ -544,9 +536,10 @@ function activate(context) {
     }
     while (colorName === "none");
     vscode.window.showInformationMessage(`random color "${colorName}" set to current file`);
-    setColor(context, colorName, file.replace(/\\/g, "\\\\"));
+    setColor(context, colorName, getTabTitle(a));
 
   });
+
   disposable = vscode.commands.registerCommand('tabscolor.more', function (a, b) {
     const customColors = storage.get("customColors") || {};
     if (!Object.keys(customColors).length)
@@ -568,16 +561,13 @@ function activate(context) {
     ).then(color => {
       if (!color)
         return;
-      let file = vscode.window.activeTextEditor?.document.fileName;
-      if (a) file = a.fsPath;
-      setColor(context, color.label, file.replace(/\\/g, "\\\\"));
+      setColor(context, color.label, getTabTitle(a));
     });
   });
 
 
   // add color commands
   disposable = vscode.commands.registerCommand('tabscolor.addColor', function (a, b) {
-    let file = vscode.window.activeTextEditor?.document.fileName;
     const allColors = { ...storage.get("customColors"), ...storage.get("defaultColors") };
     // Create a new webview panel
     const panel = vscode.window.createWebviewPanel(
@@ -876,7 +866,7 @@ function activate(context) {
               background: message.colorBackground,
               color: message.colorText
             };
-            setColor(context, message.colorName, file.replace(/\\/g, "\\\\"));
+            setColor(context, message.colorName, getTabTitle(a));
             vscode.window.showInformationMessage(`Color "${message.colorName}" added`);
             return;
           }
