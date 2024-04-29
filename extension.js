@@ -37,7 +37,6 @@ function recordFirstKnownUse(context){
   }
 }
 function generateCssFile(context) {
-  console.log("generate");
   const colors = {
     "none": { background: "transparent", color: "inherit" },
     "salmon": { background: "#9d533a", color: "white" },
@@ -91,7 +90,7 @@ function generateCssFile(context) {
     const _fontColor = colorsData[i].color;
     const _opacity = colorsData[i].opacity || "0.6";
     const backgroundSelectorsArr = _colorTabs.map(function (a) {
-      console.log(a);
+      console.log("aaa", a);
       return `.tab[title*="${formatTitle(a)}" i]`;
     });
     activeSelectorsArr.push(..._colorTabs.map(function (a) {
@@ -204,11 +203,15 @@ function getTabTitle(tab){
   let title = "";
   if(tab.external?.startsWith("vscode-remote") || tab._formatted?.startsWith("vscode-remote")){
     title = tab.path;
+    if(tab.authority?.startsWith("wsl")){
+      title = title.replace(/^\/([^/]+\/[^/]+\/)/, '~/');
+    }
   }
   else{
     if (tab) file = tab.fsPath;
     title = file.replace(/\\/g, "\\\\")
   }
+  console.log("get tab", title);
    return title;
 }
 
