@@ -36,11 +36,19 @@ example:
     "backgroundColor": "#00efff",
     "fontColor": "#ffffff"
   }
-  }
+}
 ```
+example 2 (partial path):
+```
+"tabsColor.byDirectory": {
+  "\\my_project\\": {
+    "backgroundColor": "#00efff",
+    "fontColor": "#ffffff"
+  }
+}
 Add this to your VS Code user settings.json
 
-The directoy path must be absolute
+~~The directoy path must be absolute~~
 ## Set the active tab color
 
 example:
