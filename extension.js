@@ -198,11 +198,11 @@ function promptRestartAfterUpdate() {
 }
 
 function getTabTitle(tab) {
-  let file = vscode.window.activeTextEditor?.document.fileName;
+  let file = vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.fileName;
   let title = "";
-  if (tab.external?.startsWith("vscode-remote") || tab._formatted?.startsWith("vscode-remote")) {
+  if (tab.external && tab.external.startsWith("vscode-remote") || tab._formatted && tab._formatted.startsWith("vscode-remote")) {
     title = tab.path;
-    if (tab.authority?.startsWith("wsl")) {
+    if (tab.authority && tab.authority.startsWith("wsl")) {
       // replace \home\USER\ by tilde ~, temporary solution until finding a proper way to get the homedir path
       title = title.replace(/^\/([^/]+\/[^/]+\/)/, '~/');
     }
@@ -851,7 +851,7 @@ function activate(context) {
       message => {
         switch (message.command) {
           case 'addColor': {
-            if (!message.colorName?.trim() || !message.colorBackground || !message.colorText)
+            if (message.colorName && !message.colorName.trim() || !message.colorBackground || !message.colorText)
               return vscode.window.showErrorMessage('Please fill in all fields correctly');
             if (allColors[message.colorName])
               return vscode.window.showErrorMessage(`Color "${message.colorName}" already exists`);
