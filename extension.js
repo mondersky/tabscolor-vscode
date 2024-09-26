@@ -68,7 +68,7 @@ function generateCssFile(context) {
     ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`;
   }
   for (const a in byDirectory) {
-    if (a == "my/directory/") continue;
+    if (a === "my/directory/" || a === "C:\\my\\directory\\") continue;
     const title = a.replace(/\\/g, "\\\\");
     let tabSelector = `.tab[title*="${formatTitle(title)}" i]`;
     style += `${tabSelector}{background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || "0.6"};}
