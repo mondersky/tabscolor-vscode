@@ -38,6 +38,7 @@ example:
   }
 }
 ```
+
 example 2 (partial path):
 ```
 "tabsColor.byDirectory": {
