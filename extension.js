@@ -30,10 +30,10 @@ function formatTitle(title) {
   return title;
 }
 
-function recordFirstKnownUse(context){
+function recordFirstKnownUse(context) {
   const storage = new Storage(context);
   if (!storage.get("firstKnownUse")) {
-          storage.set("firstKnownUse", new Date().toISOString().slice(0, 10));
+    storage.set("firstKnownUse", new Date().toISOString().slice(0, 10));
   }
 }
 function generateCssFile(context) {
@@ -68,7 +68,7 @@ function generateCssFile(context) {
     ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`;
   }
   for (const a in byDirectory) {
-    if (a == "my/directory/") continue;
+    if (a === "my/directory/" || a === "C:\\my\\directory\\") continue;
     const title = a.replace(/\\/g, "\\\\");
     let tabSelector = `.tab[title*="${formatTitle(title)}" i]`;
     style += `${tabSelector}{background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || "0.6"};}
@@ -168,13 +168,13 @@ async function clearOpenTabColors(context) {
   const tabs = storage.get("tabs") || {};
   const editors = vscode.workspace.textDocuments;
   for (const editor of editors) {
-      const resource = editor.uri;
-      const fileName = resource.fsPath.replace(/\\/g, "\\\\");
-      for (const color in tabs) {
-        if (tabs[color].includes(fileName)) {
-          tabs[color] = tabs[color].filter(tab => tab !== fileName);
+    const resource = editor.uri;
+    const fileName = resource.fsPath.replace(/\\/g, "\\\\");
+    for (const color in tabs) {
+      if (tabs[color].includes(fileName)) {
+        tabs[color] = tabs[color].filter(tab => tab !== fileName);
       }
-      }
+    }
   }
 
   storage.set("tabs", tabs);
@@ -197,21 +197,21 @@ function promptRestartAfterUpdate() {
     );
 }
 
-function getTabTitle(tab){
-  let file = vscode.window.activeTextEditor?.document.fileName;
+function getTabTitle(tab) {
+  let file = vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.fileName;
   let title = "";
-  if(tab.external?.startsWith("vscode-remote") || tab._formatted?.startsWith("vscode-remote")){
+  if (tab.external && tab.external.startsWith("vscode-remote") || tab._formatted && tab._formatted.startsWith("vscode-remote")) {
     title = tab.path;
-    if(tab.authority?.startsWith("wsl")){
+    if (tab.authority && tab.authority.startsWith("wsl")) {
       // replace \home\USER\ by tilde ~, temporary solution until finding a proper way to get the homedir path
       title = title.replace(/^\/([^/]+\/[^/]+\/)/, '~/');
     }
   }
-  else{
+  else {
     if (tab) file = tab.fsPath;
     title = file.replace(/\\/g, "\\\\")
   }
-   return title;
+  return title;
 }
 
 function activate(context) {
@@ -227,7 +227,7 @@ function activate(context) {
       });
   }
 
-  if ( storage.get("alert 7.3.2024") !== true && vscodeVersion < "1.87.0") {
+  if (storage.get("alert 7.3.2024") !== true && vscodeVersion < "1.87.0") {
     vscode.window
       .showInformationMessage("update your vscode to 1.87.0 or higher to enable tabsColor.", "Don't show this again")
       .then(answer => {
@@ -346,18 +346,18 @@ function activate(context) {
 		},500);
 	`;
   // remove old patches
-  if(bootstrap.hasPatch("watcher")){
+  if (bootstrap.hasPatch("watcher")) {
     bootstrap.remove("watcher").write();
   }
-  if(bootstrap.hasPatch("watcher.2.0")){
+  if (bootstrap.hasPatch("watcher.2.0")) {
     bootstrap.remove("watcher.2.0").write();
   }
-  if(bootstrap.hasPatch("watcher.2.1")){
+  if (bootstrap.hasPatch("watcher.2.1")) {
     bootstrap.remove("watcher.2.1").write();
   }
   if (!bootstrap.hasPatch(patchName)) {
-      vscode.window
-        .showInformationMessage(`After restart you will see the message "Your Code installation is corrupt..." click on the gear icon and choose "don't show again" `);
+    vscode.window
+      .showInformationMessage(`After restart you will see the message "Your Code installation is corrupt..." click on the gear icon and choose "don't show again" `);
 
     if (bootstrap.isReadOnly() && !bootstrap.chmod()) {
       bootstrap.sudoPrompt(function (result) {
@@ -851,7 +851,7 @@ function activate(context) {
       message => {
         switch (message.command) {
           case 'addColor': {
-            if (!message.colorName?.trim() || !message.colorBackground || !message.colorText)
+            if (message.colorName && !message.colorName.trim() || !message.colorBackground || !message.colorText)
               return vscode.window.showErrorMessage('Please fill in all fields correctly');
             if (allColors[message.colorName])
               return vscode.window.showErrorMessage(`Color "${message.colorName}" already exists`);
