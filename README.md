@@ -48,7 +48,6 @@ example 2 (partial path):
 }
 Add this to your VS Code user settings.json
 
-~~The directoy path must be absolute~~
 ## Set the active tab color
 
 example:
