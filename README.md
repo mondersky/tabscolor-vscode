@@ -27,6 +27,7 @@ example:
   }
 ```
 Add this to your VS Code user settings.json
+
 ## customize VSCode tab color by directory path
 
 example:
@@ -47,6 +48,8 @@ example 2 (partial path):
     "fontColor": "#ffffff"
   }
 }
+```
+
 Add this to your VS Code user settings.json
 
 ## Set the active tab color
@@ -93,22 +96,22 @@ Don't hesitate to contribute to this extension.
 
 ## TODO 
 
-~~Allow custom color options~~  (done by ✓[ntkhang03](https://github.com/ntkhang03))
+[x] Allow custom color options  (done by ✓[ntkhang03](https://github.com/ntkhang03))
 
-~~new command: clear the color of all open tabs~~ (done by ✓[kobilee](https://github.com/kobilee))
+[x] new command: clear the color of all open tabs (done by ✓[kobilee](https://github.com/kobilee))
 
-Add more colors
+[ ] Add more colors
 
-Add color icons to color options in the contextual menu
+[ ] Add color icons to color options in the contextual menu
 
-Allow partial paths when coloring based on directory
+[ ] Allow partial paths when coloring based on directory
 
-new command: set random colors to all open tabs  
+[ ] new command: set random colors to all open tabs  
 
-new command: sort open tabs by color 
+[ ] new command: sort open tabs by color 
 
-new setting: display/hide language icon on tabs
+[ ] new setting: display/hide language icon on tabs
 
-Add an option on the explorer contextual menu to set colors accoding to the target folder 
+[ ] Add an option on the explorer contextual menu to set colors accoding to the target folder 
 
-new feature: toggle color of a tab by double click
+[ ] new feature: toggle color of a tab by double click
