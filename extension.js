@@ -255,9 +255,9 @@ function activate(context) {
   }
   let cssFileLink = path.join(modulesPath(context), "inject.css").replace(/\\/g, "/");
   if (os.platform() == "win32") { cssFileLink = "vscode-file://vscode-app/" + cssFileLink; }
-  let bootstrapPath = resourcesPath() +"/workbench.desktop.main.js";
+  let bootstrapPath = resourcesPath() + "/workbench.desktop.main.js";
   if (!fs.existsSync(bootstrapPath)) {
-    bootstrapPath = resourcesPath(), "bootstrap-window.js");
+    bootstrapPath = resourcesPath() + "bootstrap-window.js";
   }
   const bootstrap = new Core(context, bootstrapPath);
   const code = `
