@@ -5,6 +5,7 @@ const os = require("os");
 const fs = require('fs');
 const Core = require("./modules/core.js");
 const Storage = require("./modules/storage.js");
+
 /**
  * @param {vscode.ExtensionContext} context
  */
@@ -14,6 +15,22 @@ let storage_ = null;
 const vscodeVersion = vscode.version;
 let patchName = "patch.1"
 
+function getVSCodeResourcesPath() {
+  const appRoot = vscode.env.appRoot; // This gives you the root path of VS Code
+  const resourcesPath = path.join(appRoot,  'out', 'vs', 'workbench');
+
+  // Create a vscode-file URI
+  const resourceUri = vscode.Uri.file(resourcesPath);
+
+  console.log('VSCode Resources Path:', resourceUri.toString());
+
+  return resourcesPath;
+}
+
+// Call the function to get the resources path
+let thepath = getVSCodeResourcesPath();
+
+console.log("Current file path: ", thepath);
 function modulesPath(context) {
   return path.join(context.globalStoragePath, "modules");
 }
@@ -248,10 +265,13 @@ function activate(context) {
   }
   let cssFileLink = path.join(modulesPath(context), "inject.css").replace(/\\/g, "/");
   if (os.platform() == "win32") { cssFileLink = "vscode-file://vscode-app/" + cssFileLink; }
-  let bootstrapPath = path.join(path.dirname(require.main.filename), "vs/workbench/workbench.desktop.main.js");
-  if (!fs.existsSync(bootstrapPath)) {
-    bootstrapPath = path.join(path.dirname(require.main.filename), "bootstrap-window.js");
-  }
+  let installationPath = getVSCodeResourcesPath();
+  console.log("------------path", installationPath);
+  let bootstrapPath = installationPath +"/workbench.desktop.main.js";
+  console.log("-----------boot",bootstrapPath);
+  // if (!fs.existsSync(bootstrapPath)) {
+  //   bootstrapPath = path.join(path.dirname(__filename), "bootstrap-window.js");
+  // }
   const bootstrap = new Core(context, bootstrapPath);
   const code = `
 	function reloadCss(){
@@ -293,7 +313,7 @@ function activate(context) {
 				callback(addedNodes);
 		});
 	};
-	tabsChanged = function (func) {
+	function tabsChanged (func) {
 		const targetNode = document;
 		const config = { attributes: true, childList: true, subtree: true };
 		const callback = (mutationList, observer) => {
@@ -306,7 +326,7 @@ function activate(context) {
 		const observer = new MutationObserver(callback);
 		observer.observe(targetNode, config);
 	  };
-  targetTabs = function(){
+   function targetTabs(){
     let tabs = document.querySelectorAll(".tabs-container .tab")
     if(tabs){
       tabs.forEach(function(tab){
@@ -927,7 +947,7 @@ function activate(context) {
 
 // when deactivate (reload window), value of context is undefined
 function deactivate(context) {
-  const bootstrapPath = path.join(path.dirname(require.main.filename), "bootstrap-window.js");
+  const bootstrapPath = path.join(path.dirname(__filename), "bootstrap-window.js");
   const bootstrap = new Core(context, bootstrapPath);
   if (context) {
     const storage = new Storage(context);

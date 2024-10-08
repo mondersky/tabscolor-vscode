@@ -1,3 +1,7 @@
+## [0.2.5] - 2024-08-10
+
+Fix vs code version 1.94.0 incompatibility
+
 ## [0.2.3] - 2024-04-25
 
 SSH tabs support
