@@ -15,22 +15,12 @@ let storage_ = null;
 const vscodeVersion = vscode.version;
 let patchName = "patch.1"
 
-function getVSCodeResourcesPath() {
-  const appRoot = vscode.env.appRoot; // This gives you the root path of VS Code
+function resourcesPath() {
+  const appRoot = vscode.env.appRoot; 
   const resourcesPath = path.join(appRoot,  'out', 'vs', 'workbench');
-
-  // Create a vscode-file URI
-  const resourceUri = vscode.Uri.file(resourcesPath);
-
-  console.log('VSCode Resources Path:', resourceUri.toString());
-
   return resourcesPath;
 }
 
-// Call the function to get the resources path
-let thepath = getVSCodeResourcesPath();
-
-console.log("Current file path: ", thepath);
 function modulesPath(context) {
   return path.join(context.globalStoragePath, "modules");
 }
@@ -265,13 +255,10 @@ function activate(context) {
   }
   let cssFileLink = path.join(modulesPath(context), "inject.css").replace(/\\/g, "/");
   if (os.platform() == "win32") { cssFileLink = "vscode-file://vscode-app/" + cssFileLink; }
-  let installationPath = getVSCodeResourcesPath();
-  console.log("------------path", installationPath);
-  let bootstrapPath = installationPath +"/workbench.desktop.main.js";
-  console.log("-----------boot",bootstrapPath);
-  // if (!fs.existsSync(bootstrapPath)) {
-  //   bootstrapPath = path.join(path.dirname(__filename), "bootstrap-window.js");
-  // }
+  let bootstrapPath = resourcesPath() +"/workbench.desktop.main.js";
+  if (!fs.existsSync(bootstrapPath)) {
+    bootstrapPath = resourcesPath(), "bootstrap-window.js");
+  }
   const bootstrap = new Core(context, bootstrapPath);
   const code = `
 	function reloadCss(){
