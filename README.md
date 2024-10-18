@@ -73,8 +73,9 @@ Add this to your VS Code user `settings.json`
 ## Notes :
 
 - This extension doesn't work on mac os and some linux systems
-- This extension uses patching in order to allow tabs style editing, if your vs code files are read-only then Tabscolor may not work.
+- This extension uses patching in order to allow tabs style editing, so if your vs code files are read-only then Tabscolor may not work.
   - This is what triggers the "Your code installation is corrupt..." message. The ideal would be to avoid doing this but this is the only way to make this feature possible at the momment... https://github.com/mondersky/tabscolor-vscode/issues/20
+- This extension doesn't work for "[Floating editor windows](https://code.visualstudio.com/updates/v1_85#_floating-editor-windows)"... https://github.com/mondersky/tabscolor-vscode/issues/40
 
 ### Uninstall :
 
