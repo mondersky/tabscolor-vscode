@@ -71,26 +71,31 @@ Add this to your VS Code user settings.json
 
 ### This extension can :
 
-- change the background color of any tab header using the contextual menu
-- automatically change the background color of tabs based on filetypes
-- automatically change the background color of tabs based on directories
+- change the background/text color of any tab header using the contextual menu
+- automatically change the background/text color of tabs based on filetypes
+- automatically change the background/text color of tabs based on directories (absolute or partial)
+- change the background/text color of the active tab
 
-### This extension can't (yet) :
+### This extension can't (*yet*) :
 
 - change the whole background of the tab page
-- change the background color of tabs based on regex
+- change the background color of tabs based on regex (but partial exact paths are possible)
 
 
 ## Available commands:
 
 - clear all tabs colors
 - clear all open tab colors
-- random color
+- set tab random color
+- set tab specific color (from a list of colors)
+- add/delete custom color
+- reapply patch
+- remove patch (required for uninstalling)
 
 
 ## Contributors Welcome
 
-Don't hesitate to contribute to this extension.
+Don't hesitate to contribute to this extension!
 
 ### TODO
 
