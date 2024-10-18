@@ -1,23 +1,27 @@
 
 [![Total Installs](https://img.shields.io/visual-studio-marketplace/i/mondersky.tabscolor)](https://marketplace.visualstudio.com/items?itemName=mondersky.tabscolor)
-> This extension may not work on some Macbooks
 
-> **IMPORTANT NOTE : AFTER INSTALLING TABSCOLOR YOU MAY GET THE POPUP "YOUR CODE INSTALLATION IS CORRUPT..." UPON RESTART. JUST CLICK ON THE GEAR ICON AND CHOOSE DON'T SHOW AGAIN.**
+> ⚠️ This extension may not work on mac os and some linux systems
+
+> ⚠️ **IMPORTANT NOTE : AFTER INSTALLING TABSCOLOR YOU MAY GET THE POPUP "YOUR CODE INSTALLATION IS CORRUPT..." UPON RESTART. JUST CLICK ON THE GEAR ICON AND CHOOSE DON'T SHOW AGAIN.**
 
 ## About tabscolor
 
 ![tabsColor preview](https://github.com/mondersky/tabscolor-vscode/raw/master/docs/extension_demo.gif)
 
-This extension lets you color the background of your tabs either by right click, by filetype or by directory. Useful when working with multiple tabs. 
-The extension is still in an experimental phase.
+This extension lets you color the background/text of your tabs either by right click, by filetype or by directory. Useful when working with many tabs.
+
+> ⚠️ The extension is still in an experimental phase!
+
 
 ## Quickstart
 
-Install the extension, restart your vs code (not just reload), right click on any tab and select from the color menu
+Install the extension, restart your vs code (not just reload), right click on any tab and select from the color menu.
+You can also use settings for coloring based on path or filetype.
 
 ### Customize VSCode tab color by file types
 
-example: 
+example:
 ```
 "tabsColor.byFileType": {
     "js": {
@@ -26,7 +30,7 @@ example:
     }
   }
 ```
-Add this to your VS Code user settings.json
+Add this to your VS Code user `settings.json`
 
 ### Customize VSCode tab color by directory path
 
@@ -49,8 +53,7 @@ example 2 (partial path):
   }
 }
 ```
-
-Add this to your VS Code user settings.json
+Add this to your VS Code user `settings.json`
 
 ### Set the active tab color
 
@@ -61,7 +64,7 @@ example:
   "fontColor": "black"
 }
 ```
-Add this to your VS Code user settings.json
+Add this to your VS Code user `settings.json`
 
 
 ## Notes :
@@ -104,8 +107,8 @@ Don't hesitate to contribute to this extension!
 - [x] Allow partial paths when coloring based on directory
 - [ ] Add more colors
 - [ ] Add color icons to color options in the contextual menu
-- [ ] new command: set random colors to all open tabs  
-- [ ] new command: sort open tabs by color 
+- [ ] new command: set random colors to all open tabs
+- [ ] new command: sort open tabs by color
 - [ ] new setting: display/hide language icon on tabs
-- [ ] Add an option on the explorer contextual menu to set colors accoding to the target folder 
+- [ ] Add an option on the explorer contextual menu to set colors accoding to the target folder
 - [ ] new feature: toggle color of a tab by double click
