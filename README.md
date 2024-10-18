@@ -15,7 +15,7 @@ The extension is still in an experimental phase.
 
 Install the extension, restart your vs code (not just reload), right click on any tab and select from the color menu
 
-##  customize VSCode tab color by file types
+### Customize VSCode tab color by file types
 
 example: 
 ```
@@ -28,7 +28,7 @@ example:
 ```
 Add this to your VS Code user settings.json
 
-## customize VSCode tab color by directory path
+### Customize VSCode tab color by directory path
 
 example:
 ```
@@ -52,7 +52,7 @@ example 2 (partial path):
 
 Add this to your VS Code user settings.json
 
-## Set the active tab color
+### Set the active tab color
 
 example:
 ```
@@ -63,55 +63,44 @@ example:
 ```
 Add this to your VS Code user settings.json
 
-## This extension can :
-
-- change the background color of any tab header using the contextual menu
-
-- automatically change the background color of tabs based on filetypes
-
-- automatically change the background color of tabs based on directories
-
-## This extension can't (yet) :
-
-- change the whole background of the tab page
-
-- change the background color of tabs based on regex
 
 ## Notes :
 
 - This extension doesn't work on mac os and some linux systems
-
 - This extension uses patching in order to allow tabs style editing, if your vs code files are read-only then Tabscolor may not work.
+
+### This extension can :
+
+- change the background color of any tab header using the contextual menu
+- automatically change the background color of tabs based on filetypes
+- automatically change the background color of tabs based on directories
+
+### This extension can't (yet) :
+
+- change the whole background of the tab page
+- change the background color of tabs based on regex
+
 
 ## Available commands:
 
 - clear all tabs colors
-
 - clear all open tab colors
-
 - random color
+
+
 ## Contributors Welcome
 
 Don't hesitate to contribute to this extension.
 
-## TODO 
+### TODO
 
 - [x] Allow custom color options  (done by ✓[ntkhang03](https://github.com/ntkhang03))
-
 - [x] new command: clear the color of all open tabs (done by ✓[kobilee](https://github.com/kobilee))
-
+- [x] Allow partial paths when coloring based on directory
 - [ ] Add more colors
-
 - [ ] Add color icons to color options in the contextual menu
-
-- [ ] Allow partial paths when coloring based on directory
-
 - [ ] new command: set random colors to all open tabs  
-
 - [ ] new command: sort open tabs by color 
-
 - [ ] new setting: display/hide language icon on tabs
-
 - [ ] Add an option on the explorer contextual menu to set colors accoding to the target folder 
-
 - [ ] new feature: toggle color of a tab by double click
