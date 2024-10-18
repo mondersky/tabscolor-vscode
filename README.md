@@ -3,7 +3,10 @@
 
 > ⚠️ This extension may not work on mac os and some linux systems
 
-> ⚠️ **IMPORTANT NOTE : AFTER INSTALLING TABSCOLOR YOU MAY GET THE POPUP "YOUR CODE INSTALLATION IS CORRUPT..." UPON RESTART. JUST CLICK ON THE GEAR ICON AND CHOOSE DON'T SHOW AGAIN.**
+> ⚠️ **IMPORTANT NOTE :**
+> * AFTER INSTALLING TABSCOLOR AND RESTARTING VSCODE, YOU WILL GET THE POPUP "*YOUR CODE INSTALLATION IS CORRUPT...*".
+> * CLICK ON THE GEAR ICON AND CHOOSE "*DON'T SHOW AGAIN*"
+> * PLEASE REFER TO THE **NOTES** AND **UNINSTALL** SECTION FOR MORE INFORMATION
 
 ## About tabscolor
 
@@ -16,7 +19,7 @@ This extension lets you color the background/text of your tabs either by right c
 
 ## Quickstart
 
-Install the extension, restart your vs code (not just reload), right click on any tab and select from the color menu.
+Install the extension, RESTART your vscode (not just reload), right click on any tab and select from the color menu.
 You can also use settings for coloring based on path or filetype.
 
 ### Customize VSCode tab color by file types
@@ -71,6 +74,12 @@ Add this to your VS Code user `settings.json`
 
 - This extension doesn't work on mac os and some linux systems
 - This extension uses patching in order to allow tabs style editing, if your vs code files are read-only then Tabscolor may not work.
+  - This is what triggers the "Your code installation is corrupt..." message. The ideal would be to avoid doing this but this is the only way to make this feature possible at the momment... https://github.com/mondersky/tabscolor-vscode/issues/20
+
+### Uninstall :
+
+- You MUST use the "remove patch" command before uninstalling to avoid "Your code installation is corrupt..." message in the future
+  - There is no current API to execute it automatically when the user is uninstalling the extension... https://github.com/mondersky/tabscolor-vscode/issues/16
 
 ### This extension can :
 
