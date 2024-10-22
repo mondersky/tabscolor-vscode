@@ -113,12 +113,11 @@ Don't hesitate to contribute to this extension!
 ### TODO
 
 - [x] Allow custom color options  (done by ✓[ntkhang03](https://github.com/ntkhang03))
-- [x] new command: clear the color of all open tabs (done by ✓[kobilee](https://github.com/kobilee))
+- [x] New command: clear the color of all open tabs (done by ✓[kobilee](https://github.com/kobilee))
 - [x] Allow partial paths when coloring based on directory
-- [ ] Add more colors
 - [ ] Add color icons to color options in the contextual menu
-- [ ] new command: set random colors to all open tabs
-- [ ] new command: sort open tabs by color
-- [ ] new setting: display/hide language icon on tabs
-- [ ] Add an option on the explorer contextual menu to set colors accoding to the target folder
-- [ ] new feature: toggle color of a tab by double click
+- [ ] New command: set random colors to all open tabs
+- [ ] New command: sort open tabs by color
+- [ ] Add a new item to the explorer contextual menu to quickly set colors based on to the target folder
+- [ ] New feature: toggle color of a tab by a shortcut
+- [ ] New setting: tab opacity when inactive
