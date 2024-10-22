@@ -207,7 +207,7 @@ function promptRestartAfterUpdate() {
 function getTabTitle(tab) {
   let file = vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.fileName;
   let title = "";
-  if (tab && ((tab.externaltab.external && tab.external.startsWith("vscode-remote")) || (tab._formatted && tab._formatted.startsWith("vscode-remote")))) {
+  if (tab && (tab.external && tab.external.startsWith("vscode-remote") || tab._formatted && tab._formatted.startsWith("vscode-remote"))) {
     title = tab.path;
     if (tab.authority && tab.authority.startsWith("wsl")) {
       // replace \home\USER\ by tilde ~, temporary solution until finding a proper way to get the homedir path
