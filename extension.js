@@ -83,7 +83,7 @@ function generateCssFile(context) {
   }
 
   // fix for right side drop shadow
-  style += ".monaco-icon-label-container::after{display: none !important;}";
+  style += ".monaco-icon-label-container::after{background: #ff000000 !important;}";
 
   // fix for active tab opacity
   style += ".tab.active{opacity:1 !important}";
