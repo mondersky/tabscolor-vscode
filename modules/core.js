@@ -47,7 +47,7 @@ const sudo = require('sudo-prompt');module.exports = class Core {
       return patchString;
     }
     remove(patchName) {
-      const regString = `(${this.startPatch(patchName, true)})[^]*(${this.endPatch(patchName, true)})`;
+      const regString = `(\\s*${this.startPatch(patchName, true)})[^]*(${this.endPatch(patchName, true)}\\s*)`;
       const reg = new RegExp(regString);
       this.fileContent = this.fileContent.replace(reg, "");
       return this;
