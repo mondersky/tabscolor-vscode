@@ -44,6 +44,7 @@ function recordFirstKnownUse(context) {
   }
 }
 function generateCssFile(context) {
+  // set default colors
   const colors = {
     "none": { background: "transparent", color: "inherit" },
     "salmon": { background: "#9d533a", color: "white" },
@@ -56,8 +57,9 @@ function generateCssFile(context) {
     "white": { background: "#ffffff", color: "black" }
   };
   const storage = new Storage(context);
-  // set all colors 
   storage.set("defaultColors", colors);
+
+  // query config
   const rulesBasedStyle = vscode.workspace.getConfiguration('tabsColor');
   const byFileType = rulesBasedStyle.byFileType;
   const byDirectory = rulesBasedStyle.byDirectory;
@@ -69,15 +71,17 @@ function generateCssFile(context) {
   let style = "";
   const homeDir = os.homedir() + '/';
 
+  // set by type
   for (const a in byFileType) {
-    if (a == "filetype") continue;
+    if (a === "myfiletype") continue; // skip default
     let tabSelector = `.tab[title*=".${formatTitle(a)}" i]`;
     style += `${tabSelector}{background-color:${byFileType[a].backgroundColor} !important; opacity:${byFileType[a].opacity || default_opacity};}
     ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`;
   }
-  
+
+  // set by folder
   for (const a in byDirectory) {
-    if (a === "my/directory/" || a === "C:\\my\\directory\\") continue;
+    if (a === "C:\\my\\directory\\") continue; // skip default
     const title = a.replace(/\\/g, "\\\\");
     let tabSelector = `.tab[title*="${formatTitle(title)}" i]`;
     style += `${tabSelector}{background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || default_opacity};}
@@ -90,7 +94,7 @@ function generateCssFile(context) {
   // override for active tab opacity
   style += `.tab.active{opacity:${activeTab.opacity || "1"} !important}`;
 
-  // set active (override user settings + custom colors)
+  // set active (overrides user settings/theme + custom colors)
   if (activeTab.backgroundColor != "default") {
     style += `body .tabs-container .tab.active{background-color:${activeTab.backgroundColor} !important; }`;
   }
@@ -98,6 +102,7 @@ function generateCssFile(context) {
     style += `body .tabs-container .tab.active a,body .tabs-container .tab.active .monaco-icon-label:after,body .tabs-container .tab.active .monaco-icon-label:before{color:${activeTab.fontColor} !important;}`;
   }
 
+  // overrides for manually set tabs
   let activeSelectors = "";
   const activeSelectorsArr = [];
   const colorsData = { ...storage.get("customColors"), ...storage.get("defaultColors") };
@@ -132,6 +137,8 @@ function generateCssFile(context) {
     activeSelectors = activeSelectorsArr.join(",") + `{opacity:1;}`;
   }
   style += activeSelectors;
+
+  // write css
   const dirExists = fs.existsSync(modulesPath(context));
   if (!dirExists) {
     const test = fs.mkdirSync(modulesPath(context), { recursive: true });
