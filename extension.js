@@ -74,9 +74,20 @@ function generateCssFile(context) {
   // set by type
   for (const a in byFileType) {
     if (a === "myfiletype") continue; // skip default
-    let tabSelector = `.tab[title*=".${formatTitle(a)}" i]`;
-    style += `${tabSelector}{background-color:${byFileType[a].backgroundColor} !important; opacity:${byFileType[a].opacity || default_opacity};}
-    ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`;
+    let selector = `[title*=".${formatTitle(a)}" i]`;
+    let tabSelector = `.tab${selector}`;
+    // background, text, hover drop shadow ("workbench.editor.tabSizing")
+    style += `${tabSelector} {background-color:${byFileType[a].backgroundColor} !important; opacity:${byFileType[a].opacity || default_opacity};}`;
+    style += `${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before {color:${byFileType[a].fontColor} !important;}`;
+    style += `${tabSelector} .monaco-icon-label-container::after {background: linear-gradient(to left, ${byFileType[a].backgroundColor}, transparent) !important;}`;
+
+    // hover background
+    style += `.monaco-workbench .part.editor > .content .editor-group-container.active > .title .tabs-container > ${tabSelector}:hover {background-color:${byFileType[a].backgroundColor} !important;}`;
+
+    // hover drop shadow ("workbench.editor.tabSizing"): we need specificity >= 17 -> 14 + :hover 3 times, also for both settings "shrink" and "fixed"
+    style += `.monaco-workbench .part.editor > .content .editor-group-container.active:hover > .title .tabs-container:hover > .tab.sizing-shrink${selector}:hover > .tab-label > .monaco-icon-label-container::after,
+              .monaco-workbench .part.editor > .content .editor-group-container.active:hover > .title .tabs-container:hover > .tab.sizing-fixed${selector}:hover > .tab-label > .monaco-icon-label-container::after
+              {background: linear-gradient(to left, ${byFileType[a].backgroundColor}, transparent) !important;}`
   }
 
   // set by folder
