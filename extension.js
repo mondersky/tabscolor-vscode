@@ -74,6 +74,7 @@ function generateCssFile(context) {
     style += `${tabSelector}{background-color:${byFileType[a].backgroundColor} !important; opacity:${byFileType[a].opacity || "0.6"};}
     ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`;
   }
+  
   for (const a in byDirectory) {
     if (a === "my/directory/" || a === "C:\\my\\directory\\") continue;
     const title = a.replace(/\\/g, "\\\\");
@@ -81,7 +82,7 @@ function generateCssFile(context) {
     style += `${tabSelector}{background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || "0.6"};}
     ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`;
   }
-
+  
   // fix for right side drop shadow
   style += ".tab .monaco-icon-label-container:after, .tab .monaco-icon-name-container:after{background:transparent !important;}";
 
@@ -213,7 +214,7 @@ function promptRestartAfterUpdate() {
 function getTabTitle(tab) {
   let file = vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.fileName;
   let title = "";
-  if (tab.external && tab.external.startsWith("vscode-remote") || tab._formatted && tab._formatted.startsWith("vscode-remote")) {
+  if (tab && (tab.external && tab.external.startsWith("vscode-remote") || tab._formatted && tab._formatted.startsWith("vscode-remote"))) {
     title = tab.path;
     if (tab.authority && tab.authority.startsWith("wsl")) {
       // replace \home\USER\ by tilde ~, temporary solution until finding a proper way to get the homedir path
