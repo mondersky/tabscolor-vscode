@@ -38,7 +38,8 @@
 					"default": {
 						"myfiletype": {
 							"backgroundColor": "red",
-							"fontColor": "white"
+							"fontColor": "white",
+							"opacity": "0.6",
 						}
 					},
 					"description": "Automatically color tabs based on their file type. See example on the extension page "
@@ -48,7 +49,8 @@
 					"default": {
 						"C:\\my\\directory\\": {
 							"backgroundColor": "#ffffff",
-							"fontColor": "#000000"
+							"fontColor": "#000000",
+							"opacity": "0.6",
 						}
 					},
 					"description": "Automatically color tabs based on their parent folder path. See example on the extension page"
@@ -57,7 +59,8 @@
 					"type": "object",
 					"default": {
 						"backgroundColor": "default",
-						"fontColor": "default"
+						"fontColor": "default",
+						"opacity": "1.0",
 					},
 					"description": "Color of the active tab"
 				}

@@ -29,7 +29,8 @@ example:
 "tabsColor.byFileType": {
     "js": {
       "backgroundColor": "yellow",
-      "fontColor": "black"
+      "fontColor": "black",
+      "opacity" : 0.6
     }
   }
 ```
@@ -42,7 +43,8 @@ example:
 "tabsColor.byDirectory": {
   "C:\\wamp\\www\\my_project\\css": {
     "backgroundColor": "#00efff",
-    "fontColor": "#ffffff"
+    "fontColor": "#ffffff",
+    "opacity" : 0.6
   }
 }
 ```
@@ -52,7 +54,8 @@ example 2 (partial path):
 "tabsColor.byDirectory": {
   "\\my_project\\": {
     "backgroundColor": "#00efff",
-    "fontColor": "#ffffff"
+    "fontColor": "#ffffff",
+    "opacity" : 0.6
   }
 }
 ```
@@ -64,7 +67,8 @@ example:
 ```
 "tabsColor.activeTab": {
   "backgroundColor": "yellow",
-  "fontColor": "black"
+  "fontColor": "black",
+  "opacity" : 1.0
 }
 ```
 Add this to your VS Code user `settings.json`
