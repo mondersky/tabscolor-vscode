@@ -65,13 +65,14 @@ function generateCssFile(context) {
   const cssFile = path.join(modulesPath(context), "inject.css");
   const data = "";
   const tabs = storage.get("tabs") || {};
+  const default_opacity = "0.6";
   let style = "";
   const homeDir = os.homedir() + '/';
 
   for (const a in byFileType) {
     if (a == "filetype") continue;
     let tabSelector = `.tab[title*=".${formatTitle(a)}" i]`;
-    style += `${tabSelector}{background-color:${byFileType[a].backgroundColor} !important; opacity:${byFileType[a].opacity || "0.6"};}
+    style += `${tabSelector}{background-color:${byFileType[a].backgroundColor} !important; opacity:${byFileType[a].opacity || default_opacity};}
     ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`;
   }
   
@@ -79,19 +80,24 @@ function generateCssFile(context) {
     if (a === "my/directory/" || a === "C:\\my\\directory\\") continue;
     const title = a.replace(/\\/g, "\\\\");
     let tabSelector = `.tab[title*="${formatTitle(title)}" i]`;
-    style += `${tabSelector}{background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || "0.6"};}
+    style += `${tabSelector}{background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || default_opacity};}
     ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`;
   }
   
   // fix for right side drop shadow
   style += ".tab .monaco-icon-label-container:after, .tab .monaco-icon-name-container:after{background:transparent !important;}";
 
-  // fix for active tab opacity
-  style += ".tab.active{opacity:1 !important}";
+  // override for active tab opacity
+  style += `.tab.active{opacity:${activeTab.opacity || "1"} !important}`;
 
+  // set active (override user settings + custom colors)
   if (activeTab.backgroundColor != "default") {
-    style += `body .tabs-container .tab.active{background-color:${activeTab.backgroundColor} !important; }body .tabs-container .tab.active a,body .tabs-container .tab.active .monaco-icon-label:after,body .tabs-container .tab.active .monaco-icon-label:before{color:${activeTab.fontColor} !important;}`;
+    style += `body .tabs-container .tab.active{background-color:${activeTab.backgroundColor} !important; }`;
   }
+  if (activeTab.fontColor != "default") {
+    style += `body .tabs-container .tab.active a,body .tabs-container .tab.active .monaco-icon-label:after,body .tabs-container .tab.active .monaco-icon-label:before{color:${activeTab.fontColor} !important;}`;
+  }
+
   let activeSelectors = "";
   const activeSelectorsArr = [];
   const colorsData = { ...storage.get("customColors"), ...storage.get("defaultColors") };
@@ -102,7 +108,7 @@ function generateCssFile(context) {
     let fontColorSelectors = "";
     const _background = colorsData[i].background;
     const _fontColor = colorsData[i].color;
-    const _opacity = colorsData[i].opacity || "0.6";
+    const _opacity = colorsData[i].opacity || default_opacity;
     const backgroundSelectorsArr = _colorTabs.map(function (a) {
       return `.tab[title*="${formatTitle(a)}" i]`;
     });
