@@ -76,15 +76,13 @@ function generateCssFile(context) {
     if (a === "myfiletype") continue; // skip default
     let selector = `[title*=".${formatTitle(a)}" i]`;
     let tabSelector = `.tab${selector}`;
-    // background, text, hover drop shadow ("workbench.editor.tabSizing")
+    // background, text, right side shadow ("workbench.editor.tabSizing")
     style += `${tabSelector} {background-color:${byFileType[a].backgroundColor} !important; opacity:${byFileType[a].opacity || default_opacity};}`;
     style += `${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before {color:${byFileType[a].fontColor} !important;}`;
     style += `${tabSelector} .monaco-icon-label-container::after {background: linear-gradient(to left, ${byFileType[a].backgroundColor}, transparent) !important;}`;
-
     // hover background
     style += `.monaco-workbench .part.editor > .content .editor-group-container.active > .title .tabs-container > ${tabSelector}:hover {background-color:${byFileType[a].backgroundColor} !important;}`;
-
-    // hover drop shadow ("workbench.editor.tabSizing"): we need specificity >= 17 -> 14 + :hover 3 times, also for both settings "shrink" and "fixed"
+    // hover right side shadow: we need specificity >= 17 -> 14 + :hover 3 times, also for both settings "shrink" and "fixed"
     style += `.monaco-workbench .part.editor > .content .editor-group-container.active:hover > .title .tabs-container:hover > .tab.sizing-shrink${selector}:hover > .tab-label > .monaco-icon-label-container::after,
               .monaco-workbench .part.editor > .content .editor-group-container.active:hover > .title .tabs-container:hover > .tab.sizing-fixed${selector}:hover > .tab-label > .monaco-icon-label-container::after
               {background: linear-gradient(to left, ${byFileType[a].backgroundColor}, transparent) !important;}`
@@ -94,13 +92,19 @@ function generateCssFile(context) {
   for (const a in byDirectory) {
     if (a === "C:\\my\\directory\\") continue; // skip default
     const title = a.replace(/\\/g, "\\\\");
-    let tabSelector = `.tab[title*="${formatTitle(title)}" i]`;
-    style += `${tabSelector}{background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || default_opacity};}
-    ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`;
+    let selector = `[title*="${formatTitle(title)}" i]`;
+    let tabSelector = `.tab${selector}`;
+    // background, text, right side shadow ("workbench.editor.tabSizing")
+    style += `${tabSelector}{background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || default_opacity};}`;
+    style += `${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`;
+    style += `${tabSelector} .monaco-icon-label-container::after {background: linear-gradient(to left, ${byDirectory[a].backgroundColor}, transparent) !important;}`;
+    // hover background
+    style += `.monaco-workbench .part.editor > .content .editor-group-container.active > .title .tabs-container > ${tabSelector}:hover {background-color:${byDirectory[a].backgroundColor} !important;}`;
+    // hover right side shadow: we need specificity >= 17 -> 14 + :hover 3 times, also for both settings "shrink" and "fixed"
+    style += `.monaco-workbench .part.editor > .content .editor-group-container.active:hover > .title .tabs-container:hover > .tab.sizing-shrink${selector}:hover > .tab-label > .monaco-icon-label-container::after,
+              .monaco-workbench .part.editor > .content .editor-group-container.active:hover > .title .tabs-container:hover > .tab.sizing-fixed${selector}:hover > .tab-label > .monaco-icon-label-container::after
+              {background: linear-gradient(to left, ${byDirectory[a].backgroundColor}, transparent) !important;}`
   }
-  
-  // fix for right side drop shadow
-  style += ".tab .monaco-icon-label-container:after, .tab .monaco-icon-name-container:after{background:transparent !important;}";
 
   // override for active tab opacity
   style += `.tab.active{opacity:${activeTab.opacity || "1"} !important}`;
