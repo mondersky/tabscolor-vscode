@@ -44,6 +44,7 @@ function recordFirstKnownUse(context) {
   }
 }
 function generateCssFile(context) {
+  // set default colors
   const colors = {
     "none": { background: "transparent", color: "inherit" },
     "salmon": { background: "#9d533a", color: "white" },
@@ -56,8 +57,9 @@ function generateCssFile(context) {
     "white": { background: "#ffffff", color: "black" }
   };
   const storage = new Storage(context);
-  // set all colors 
   storage.set("defaultColors", colors);
+
+  // query config
   const rulesBasedStyle = vscode.workspace.getConfiguration('tabsColor');
   const byFileType = rulesBasedStyle.byFileType;
   const byDirectory = rulesBasedStyle.byDirectory;
@@ -65,33 +67,57 @@ function generateCssFile(context) {
   const cssFile = path.join(modulesPath(context), "inject.css");
   const data = "";
   const tabs = storage.get("tabs") || {};
+  const default_opacity = "0.6";
   let style = "";
   const homeDir = os.homedir() + '/';
 
+  // set by type
   for (const a in byFileType) {
-    if (a == "filetype") continue;
-    let tabSelector = `.tab[title*=".${formatTitle(a)}" i]`;
-    style += `${tabSelector}{background-color:${byFileType[a].backgroundColor} !important; opacity:${byFileType[a].opacity || "0.6"};}
-    ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`;
+    if (a === "myfiletype") continue; // skip default
+    let selector = `[title*=".${formatTitle(a)}" i]`;
+    let tabSelector = `.tab${selector}`;
+    // background, text, right side shadow ("workbench.editor.tabSizing")
+    style += `${tabSelector} {background-color:${byFileType[a].backgroundColor} !important; opacity:${byFileType[a].opacity || default_opacity};}`;
+    style += `${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before {color:${byFileType[a].fontColor} !important;}`;
+    style += `${tabSelector} .monaco-icon-label-container::after {background: linear-gradient(to left, ${byFileType[a].backgroundColor}, transparent) !important;}`;
+    // hover background
+    style += `.monaco-workbench .part.editor > .content .editor-group-container.active > .title .tabs-container > ${tabSelector}:hover {background-color:${byFileType[a].backgroundColor} !important;}`;
+    // hover right side shadow: we need specificity >= 17 -> 14 + :hover 3 times, also for both settings "shrink" and "fixed"
+    style += `.monaco-workbench .part.editor > .content .editor-group-container.active:hover > .title .tabs-container:hover > .tab.sizing-shrink${selector}:hover > .tab-label > .monaco-icon-label-container::after,
+              .monaco-workbench .part.editor > .content .editor-group-container.active:hover > .title .tabs-container:hover > .tab.sizing-fixed${selector}:hover > .tab-label > .monaco-icon-label-container::after
+              {background: linear-gradient(to left, ${byFileType[a].backgroundColor}, transparent) !important;}`
   }
-  
+
+  // set by folder
   for (const a in byDirectory) {
-    if (a === "my/directory/" || a === "C:\\my\\directory\\") continue;
+    if (a === "C:\\my\\directory\\") continue; // skip default
     const title = a.replace(/\\/g, "\\\\");
-    let tabSelector = `.tab[title*="${formatTitle(title)}" i]`;
-    style += `${tabSelector}{background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || "0.6"};}
-    ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`;
+    let selector = `[title*="${formatTitle(title)}" i]`;
+    let tabSelector = `.tab${selector}`;
+    // background, text, right side shadow ("workbench.editor.tabSizing")
+    style += `${tabSelector}{background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || default_opacity};}`;
+    style += `${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`;
+    style += `${tabSelector} .monaco-icon-label-container::after {background: linear-gradient(to left, ${byDirectory[a].backgroundColor}, transparent) !important;}`;
+    // hover background
+    style += `.monaco-workbench .part.editor > .content .editor-group-container.active > .title .tabs-container > ${tabSelector}:hover {background-color:${byDirectory[a].backgroundColor} !important;}`;
+    // hover right side shadow: we need specificity >= 17 -> 14 + :hover 3 times, also for both settings "shrink" and "fixed"
+    style += `.monaco-workbench .part.editor > .content .editor-group-container.active:hover > .title .tabs-container:hover > .tab.sizing-shrink${selector}:hover > .tab-label > .monaco-icon-label-container::after,
+              .monaco-workbench .part.editor > .content .editor-group-container.active:hover > .title .tabs-container:hover > .tab.sizing-fixed${selector}:hover > .tab-label > .monaco-icon-label-container::after
+              {background: linear-gradient(to left, ${byDirectory[a].backgroundColor}, transparent) !important;}`
   }
-  
-  // fix for right side drop shadow
-  style += ".tab .monaco-icon-label-container:after, .tab .monaco-icon-name-container:after{background:transparent !important;}";
 
-  // fix for active tab opacity
-  style += ".tab.active{opacity:1 !important}";
+  // override for active tab opacity
+  style += `.tab.active{opacity:${activeTab.opacity || "1"} !important}`;
 
+  // set active (overrides user settings/theme + custom colors)
   if (activeTab.backgroundColor != "default") {
-    style += `body .tabs-container .tab.active{background-color:${activeTab.backgroundColor} !important; }body .tabs-container .tab.active a,body .tabs-container .tab.active .monaco-icon-label:after,body .tabs-container .tab.active .monaco-icon-label:before{color:${activeTab.fontColor} !important;}`;
+    style += `body .tabs-container .tab.active{background-color:${activeTab.backgroundColor} !important; }`;
   }
+  if (activeTab.fontColor != "default") {
+    style += `body .tabs-container .tab.active a,body .tabs-container .tab.active .monaco-icon-label:after,body .tabs-container .tab.active .monaco-icon-label:before{color:${activeTab.fontColor} !important;}`;
+  }
+
+  // overrides for manually set tabs
   let activeSelectors = "";
   const activeSelectorsArr = [];
   const colorsData = { ...storage.get("customColors"), ...storage.get("defaultColors") };
@@ -102,7 +128,7 @@ function generateCssFile(context) {
     let fontColorSelectors = "";
     const _background = colorsData[i].background;
     const _fontColor = colorsData[i].color;
-    const _opacity = colorsData[i].opacity || "0.6";
+    const _opacity = colorsData[i].opacity || default_opacity;
     const backgroundSelectorsArr = _colorTabs.map(function (a) {
       return `.tab[title*="${formatTitle(a)}" i]`;
     });
@@ -126,6 +152,8 @@ function generateCssFile(context) {
     activeSelectors = activeSelectorsArr.join(",") + `{opacity:1;}`;
   }
   style += activeSelectors;
+
+  // write css
   const dirExists = fs.existsSync(modulesPath(context));
   if (!dirExists) {
     const test = fs.mkdirSync(modulesPath(context), { recursive: true });
