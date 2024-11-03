@@ -13,7 +13,7 @@ const Storage = require("./modules/storage.js");
 const tabsColorLog = vscode.window.createOutputChannel("Tabs Color");
 let storage_ = null;
 const vscodeVersion = vscode.version;
-let patchName = "patch.1"
+let patchName = "patch.1.1"
 
 function resourcesPath() {
   const appRoot = vscode.env.appRoot; 
@@ -26,7 +26,14 @@ function modulesPath(context) {
 }
 
 function reloadCss() {
-  vscode.window.showInformationMessage("---tab updated---");
+  console.log("-----------reload css");
+  const notificationsSettings = vscode.workspace.getConfiguration("notifications");
+  console.log(notificationsSettings);
+  const isVSCodeDoNotDisturb = vscode.workspace.getConfiguration("notifications").get("doNotDisturb");
+  if(isVSCodeDoNotDisturb){
+    console.error("tabsColor doesn't work when don't disturb mode is enabled")
+  }
+  vscode.window.showErrorMessage("Couldn't update tab color");
 }
 
 function formatTitle(title) {
@@ -216,9 +223,11 @@ function getTabTitle(tab) {
   let title = "";
   if (tab && (tab.external && tab.external.startsWith("vscode-remote") || tab._formatted && tab._formatted.startsWith("vscode-remote"))) {
     title = tab.path;
-    if (tab.authority && tab.authority.startsWith("wsl")) {
-      // replace \home\USER\ by tilde ~, temporary solution until finding a proper way to get the homedir path
-      title = title.replace(/^\/([^/]+\/[^/]+\/)/, '~/');
+    if (tab.authority && tab.authority.startsWith("wsl") || tab.authority.startsWith("ssh")) {
+      if(title.startsWith("/home/")){
+        // replace \home\USER\ by tilde ~, temporary solution until finding a proper way to get the homedir path
+        title = title.replace(/^\/([^/]+\/[^/]+\/)/, '~/');
+      }
     }
   }
   else {
@@ -227,7 +236,6 @@ function getTabTitle(tab) {
   }
   return title;
 }
-
 function activate(context) {
   const storage = new Storage(context);
   recordFirstKnownUse(context)
@@ -339,7 +347,7 @@ function activate(context) {
 			})
 			domInsert(document, function(appeared){
 				let updatePopup = appeared.filter(function(a){
-					return a.textContent.trim().includes("---tab updated---");
+					return a.textContent.trim().includes("Couldn't update tab color");
 				})
 				if(updatePopup.length>0){
 					updatePopup.forEach(function(a){
@@ -368,6 +376,9 @@ function activate(context) {
   }
   if (bootstrap.hasPatch("watcher.2.1")) {
     bootstrap.remove("watcher.2.1").write();
+  }
+  if (bootstrap.hasPatch("patch.1")) {
+    bootstrap.remove("patch.1").write();
   }
   if (!bootstrap.hasPatch(patchName)) {
     vscode.window
@@ -473,7 +484,7 @@ function activate(context) {
     css.empty();
     generateCssFile(context);
     reloadCss();
-    vscode.window.showInformationMessage('tabs colors cleared. rules based on filetype and directories wont\'t be affected');
+    vscode.window.showInformationMessage('tabs colors cleared. rules based on filetype and directories won\'t be affected');
   });
 
 

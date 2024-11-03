@@ -1,3 +1,7 @@
+## [0.2.9] - 2024-11-03
+
+Fix SSH support & do not diturb mode incompatibility
+
 ## [0.2.5] - 2024-08-10
 
 Fix vs code version 1.94.0 incompatibility
