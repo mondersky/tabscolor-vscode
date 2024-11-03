@@ -26,13 +26,6 @@ function modulesPath(context) {
 }
 
 function reloadCss() {
-  console.log("-----------reload css");
-  const notificationsSettings = vscode.workspace.getConfiguration("notifications");
-  console.log(notificationsSettings);
-  const isVSCodeDoNotDisturb = vscode.workspace.getConfiguration("notifications").get("doNotDisturb");
-  if(isVSCodeDoNotDisturb){
-    console.error("tabsColor doesn't work when don't disturb mode is enabled")
-  }
   vscode.window.showErrorMessage("Couldn't update tab color");
 }
 
