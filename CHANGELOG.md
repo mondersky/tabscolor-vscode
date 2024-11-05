@@ -1,3 +1,7 @@
+## [0.2.11] - 2024-11-03
+
+More SSH tabs are being supported
+
 ## [0.2.9] - 2024-11-03
 
 Fix SSH support & do not diturb mode incompatibility
@@ -24,12 +28,12 @@ Fix remote-ssh issues
 
 ## [0.1.32] - 2023-04-17
 
-new command: clear all open tab colors
+New command: clear all open tab colors
 ## [0.1.30] - 2022-09-10
 
-- new feature: custom color 
+New feature: custom color 
 
-- new command: random color 
+New command: random color 
 
 ## [0.1.22] - 2022-09-10
 

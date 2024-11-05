@@ -1,8 +1,8 @@
-const vscode = require('vscode');
+const vscode = require("vscode");
 const path = require("path");
-const sudo = require('sudo-prompt');
+const sudo = require("sudo-prompt");
 const os = require("os");
-const fs = require('fs');
+const fs = require("fs");
 const Core = require("./modules/core.js");
 const Storage = require("./modules/storage.js");
 
@@ -13,11 +13,11 @@ const Storage = require("./modules/storage.js");
 const tabsColorLog = vscode.window.createOutputChannel("Tabs Color");
 let storage_ = null;
 const vscodeVersion = vscode.version;
-let patchName = "patch.1.1"
+let patchName = "patch.1.1";
 
 function resourcesPath() {
-  const appRoot = vscode.env.appRoot; 
-  const resourcesPath = path.join(appRoot,  'out', 'vs', 'workbench');
+  const appRoot = vscode.env.appRoot;
+  const resourcesPath = path.join(appRoot, "out", "vs", "workbench");
   return resourcesPath;
 }
 
@@ -31,7 +31,7 @@ function reloadCss() {
 
 function formatTitle(title) {
   if (os.platform() != "win32") {
-    const homeDir = os.homedir() + '/';
+    const homeDir = os.homedir() + "/";
     title = title.replace(homeDir, "");
   }
   return title;
@@ -45,20 +45,20 @@ function recordFirstKnownUse(context) {
 }
 function generateCssFile(context) {
   const colors = {
-    "none": { background: "transparent", color: "inherit" },
-    "salmon": { background: "#9d533a", color: "white" },
-    "green": { background: "#528752", color: "white" },
-    "blue": { background: "#3498DB", color: "white" },
-    "orange": { background: "#DC7633", color: "white" },
-    "yellow": { background: "#F1C40F", color: "black" },
-    "red": { background: "#C0392B", color: "white" },
-    "black": { background: "#000000", color: "white" },
-    "white": { background: "#ffffff", color: "black" }
+    none: { background: "transparent", color: "inherit" },
+    salmon: { background: "#9d533a", color: "white" },
+    green: { background: "#528752", color: "white" },
+    blue: { background: "#3498DB", color: "white" },
+    orange: { background: "#DC7633", color: "white" },
+    yellow: { background: "#F1C40F", color: "black" },
+    red: { background: "#C0392B", color: "white" },
+    black: { background: "#000000", color: "white" },
+    white: { background: "#ffffff", color: "black" },
   };
   const storage = new Storage(context);
-  // set all colors 
+  // set all colors
   storage.set("defaultColors", colors);
-  const rulesBasedStyle = vscode.workspace.getConfiguration('tabsColor');
+  const rulesBasedStyle = vscode.workspace.getConfiguration("tabsColor");
   const byFileType = rulesBasedStyle.byFileType;
   const byDirectory = rulesBasedStyle.byDirectory;
   const activeTab = rulesBasedStyle.activeTab;
@@ -66,25 +66,34 @@ function generateCssFile(context) {
   const data = "";
   const tabs = storage.get("tabs") || {};
   let style = "";
-  const homeDir = os.homedir() + '/';
+  const homeDir = os.homedir() + "/";
 
   for (const a in byFileType) {
     if (a == "filetype") continue;
     let tabSelector = `.tab[title*=".${formatTitle(a)}" i]`;
-    style += `${tabSelector}{background-color:${byFileType[a].backgroundColor} !important; opacity:${byFileType[a].opacity || "0.6"};}
-    ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byFileType[a].fontColor} !important;}`;
+    style += `${tabSelector}{background-color:${
+      byFileType[a].backgroundColor
+    } !important; opacity:${byFileType[a].opacity || "0.6"};}
+    ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${
+      byFileType[a].fontColor
+    } !important;}`;
   }
-  
+
   for (const a in byDirectory) {
     if (a === "my/directory/" || a === "C:\\my\\directory\\") continue;
     const title = a.replace(/\\/g, "\\\\");
     let tabSelector = `.tab[title*="${formatTitle(title)}" i]`;
-    style += `${tabSelector}{background-color:${byDirectory[a].backgroundColor} !important; opacity: ${byDirectory[a].opacity || "0.6"};}
-    ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${byDirectory[a].fontColor} !important;}`;
+    style += `${tabSelector}{background-color:${
+      byDirectory[a].backgroundColor
+    } !important; opacity: ${byDirectory[a].opacity || "0.6"};}
+    ${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before{color:${
+      byDirectory[a].fontColor
+    } !important;}`;
   }
-  
+
   // fix for right side drop shadow
-  style += ".tab .monaco-icon-label-container:after, .tab .monaco-icon-name-container:after{background:transparent !important;}";
+  style +=
+    ".tab .monaco-icon-label-container:after, .tab .monaco-icon-name-container:after{background:transparent !important;}";
 
   // fix for active tab opacity
   style += ".tab.active{opacity:1 !important}";
@@ -94,7 +103,10 @@ function generateCssFile(context) {
   }
   let activeSelectors = "";
   const activeSelectorsArr = [];
-  const colorsData = { ...storage.get("customColors"), ...storage.get("defaultColors") };
+  const colorsData = {
+    ...storage.get("customColors"),
+    ...storage.get("defaultColors"),
+  };
 
   for (const i in tabs) {
     const _colorTabs = tabs[i];
@@ -106,19 +118,24 @@ function generateCssFile(context) {
     const backgroundSelectorsArr = _colorTabs.map(function (a) {
       return `.tab[title*="${formatTitle(a)}" i]`;
     });
-    activeSelectorsArr.push(..._colorTabs.map(function (a) {
-      return `.tab[title*="${formatTitle(a)}" i].active`;
-    }));
+    activeSelectorsArr.push(
+      ..._colorTabs.map(function (a) {
+        return `.tab[title*="${formatTitle(a)}" i].active`;
+      })
+    );
     const fontColorSelectorsArr = _colorTabs.map(function (a) {
       let tabSelector = `.tab[title*="${formatTitle(a)}" i]`;
       return `${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before`;
     });
     if (backgroundSelectorsArr.length > 0) {
-      backgroundSelectors = backgroundSelectorsArr.join(",") + `{background-color:${_background} !important; opacity:${_opacity};}`;
+      backgroundSelectors =
+        backgroundSelectorsArr.join(",") +
+        `{background-color:${_background} !important; opacity:${_opacity};}`;
     }
 
     if (fontColorSelectorsArr.length > 0) {
-      fontColorSelectors = fontColorSelectorsArr.join(",") + `{color:${_fontColor} !important;}`;
+      fontColorSelectors =
+        fontColorSelectorsArr.join(",") + `{color:${_fontColor} !important;}`;
     }
     style += backgroundSelectors + fontColorSelectors;
   }
@@ -132,48 +149,96 @@ function generateCssFile(context) {
   }
   if (fs.existsSync(cssFile)) {
     fs.writeFileSync(cssFile, style);
-  }
-  else {
+  } else {
     fs.appendFile(cssFile, style, function (err) {
       if (err) {
-        vscode.window
-          .showInformationMessage(
-            `Could not create a css file. tabscolor is unable to change your tabs color`
-          );
+        vscode.window.showInformationMessage(
+          `Could not create a css file. tabscolor is unable to change your tabs color`
+        );
         throw err;
       }
     });
   }
 }
 
-function setColor(context, color, title) {
+function getPossibleTitles(tab){
+  
+  let titles = [];
+
+  let file =
+    vscode.window.activeTextEditor &&
+    vscode.window.activeTextEditor.document.fileName;
+  let title = "";
+  console.log("tab-----------", tab);
+  if (
+    tab &&
+    ((tab.external && tab.external.startsWith("vscode-remote")) ||
+      (tab._formatted && tab._formatted.startsWith("vscode-remote")))
+  ) {
+    title = tab.path;
+    // keep one title with /home/USER/dir and another one with ~/dir, since we can tell if the user folder name is the main user or not
+    titles.push(title);
+    if (tab.authority && (tab.authority.startsWith("wsl") || tab.authority.startsWith("ssh")) && title.startsWith("/home/"))
+    {
+        // replace /home/USER/ by tilde ~, temporary solution until finding a proper way to get the homedir path
+        titles.push(title.replace(/^\/([^/]+\/[^/]+\/)/, "~/"));
+      }
+      
+  } else {
+    if (tab && tab.fsPath) title = tab.fsPath;
+    titles.push(title.replace(/\\/g, "\\\\"));
+  }
+  return titles;
+}
+
+function setColor(context, color, tab ){
   const storage = new Storage(context);
   if (storage.get("patchedBefore")) {
     if (storage.get("secondActivation")) {
-      storage.addTabColor(color, title);
+      let titles = getPossibleTitles(tab);
+      for(let t of titles){
+        storage.addTabColor(color, t);
+      }
       generateCssFile(context);
       reloadCss();
     } else {
-      vscode.window.showErrorMessage("In order for Tabscolor to work, you need to restart your VS Code (not just reload) ");
+      vscode.window.showErrorMessage(
+        "In order for Tabscolor to work, you need to restart your VS Code (not just reload) "
+      );
     }
-  }
-  else {
-    vscode.window.showErrorMessage("Tabscolor was unable to patch your VS Code files. ");
+  } else {
+    vscode.window.showErrorMessage(
+      "Tabscolor was unable to patch your VS Code files. "
+    );
   }
 }
-function unsetColor(context, title) {
+
+function unsetColor(context, tab) {
   const storage = new Storage(context);
   if (storage.get("patchedBefore")) {
     if (storage.get("secondActivation")) {
-      storage.removeTabColor(title);
-      generateCssFile(context);
+      if(typeof tab == "string"){
+        storage.removeTabColor(tab);
+      }
+      else{
+        
+        let titles = getPossibleTitles(tab);
+        console.log(titles);
+        for(let t of titles){
+          storage.removeTabColor(t);
+        }
+        generateCssFile(context);
+      }
       reloadCss();
     } else {
-      vscode.window.showErrorMessage("In order for Tabscolor to work, you need to restart your VS Code (not just reload) ");
+      vscode.window.showErrorMessage(
+        "In order for Tabscolor to work, you need to restart your VS Code (not just reload) "
+      );
     }
-  }
-  else {
-    vscode.window.showErrorMessage("Tabscolor was unable to patch your VS Code files. ");
+  } else {
+    vscode.window.showErrorMessage(
+      "Tabscolor was unable to patch your VS Code files. "
+    );
   }
 }
 
@@ -186,7 +251,7 @@ async function clearOpenTabColors(context) {
     const fileName = resource.fsPath.replace(/\\/g, "\\\\");
     for (const color in tabs) {
       if (tabs[color].includes(fileName)) {
-        tabs[color] = tabs[color].filter(tab => tab !== fileName);
+        tabs[color] = tabs[color].filter((tab) => tab !== fileName);
       }
     }
   }
@@ -196,46 +261,28 @@ async function clearOpenTabColors(context) {
   reloadCss();
 }
 
-
 function promptRestart() {
-  vscode.window
-    .showInformationMessage(
-      `Restart VS Code (not just reload) in order for tabscolor changes to take effect.`
-    );
+  vscode.window.showInformationMessage(
+    `Restart VS Code (not just reload) in order for tabscolor changes to take effect.`
+  );
 }
 
 function promptRestartAfterUpdate() {
-  vscode.window
-    .showInformationMessage(
-      `VS Code files change detected. Restart VS Code (not just reload) in order for tabscolor to work.`
-    );
+  vscode.window.showInformationMessage(
+    `VS Code files change detected. Restart VS Code (not just reload) in order for tabscolor to work.`
+  );
 }
 
-function getTabTitle(tab) {
-  let file = vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.fileName;
-  let title = "";
-  if (tab && (tab.external && tab.external.startsWith("vscode-remote") || tab._formatted && tab._formatted.startsWith("vscode-remote"))) {
-    title = tab.path;
-    if (tab.authority && tab.authority.startsWith("wsl") || tab.authority.startsWith("ssh")) {
-      if(title.startsWith("/home/")){
-        // replace \home\USER\ by tilde ~, temporary solution until finding a proper way to get the homedir path
-        title = title.replace(/^\/([^/]+\/[^/]+\/)/, '~/');
-      }
-    }
-  }
-  else {
-    if (tab) file = tab.fsPath;
-    title = file.replace(/\\/g, "\\\\")
-  }
-  return title;
-}
 function activate(context) {
   const storage = new Storage(context);
-  recordFirstKnownUse(context)
+  recordFirstKnownUse(context);
   if (os.type() == "Darwin" && storage.get("mac dialog") !== true) {
     vscode.window
-      .showInformationMessage("tabsColor may not work on Mac OS systems", "Don't show this again")
-      .then(answer => {
+      .showInformationMessage(
+        "tabsColor may not work on Mac OS systems",
+        "Don't show this again"
+      )
+      .then((answer) => {
         if (answer === "Don't show this again") {
           storage.set("mac dialog", true);
         }
@@ -244,8 +291,11 @@ function activate(context) {
 
   if (storage.get("alert 7.3.2024") !== true && vscodeVersion < "1.87.0") {
     vscode.window
-      .showInformationMessage("update your vscode to 1.87.0 or higher to enable tabsColor.", "Don't show this again")
-      .then(answer => {
+      .showInformationMessage(
+        "update your vscode to 1.87.0 or higher to enable tabsColor.",
+        "Don't show this again"
+      )
+      .then((answer) => {
         if (answer === "Don't show this again") {
           storage.set("alert 7.3.2024", true);
         }
@@ -255,14 +305,18 @@ function activate(context) {
   if (storage.get("deprecated dialog") == true) {
     vscode.window
       .showInformationMessage("tabsColor is Back. ", "ok")
-      .then(answer => {
+      .then((answer) => {
         if (answer === "ok") {
           storage.set("deprecated dialog", false);
         }
       });
   }
-  let cssFileLink = path.join(modulesPath(context), "inject.css").replace(/\\/g, "/");
-  if (os.platform() == "win32") { cssFileLink = "vscode-file://vscode-app/" + cssFileLink; }
+  let cssFileLink = path
+    .join(modulesPath(context), "inject.css")
+    .replace(/\\/g, "/");
+  if (os.platform() == "win32") {
+    cssFileLink = "vscode-file://vscode-app/" + cssFileLink;
+  }
   let bootstrapPath = resourcesPath() + "/workbench.desktop.main.js";
   if (!fs.existsSync(bootstrapPath)) {
     bootstrapPath = resourcesPath() + "bootstrap-window.js";
@@ -374,8 +428,9 @@ function activate(context) {
     bootstrap.remove("patch.1").write();
   }
   if (!bootstrap.hasPatch(patchName)) {
-    vscode.window
-      .showInformationMessage(`After restart you will see the message "Your Code installation is corrupt..." click on the gear icon and choose "don't show again" `);
+    vscode.window.showInformationMessage(
+      `After restart you will see the message "Your Code installation is corrupt..." click on the gear icon and choose "don't show again" `
+    );
 
     if (bootstrap.isReadOnly() && !bootstrap.chmod()) {
       bootstrap.sudoPrompt(function (result) {
@@ -385,42 +440,39 @@ function activate(context) {
             storage.set("secondActivation", false);
             storage.set("firstActivation", false);
             promptRestartAfterUpdate();
-          }
-          else {
+          } else {
             storage.set("patchedBefore", true);
             promptRestart();
           }
         } else {
-          vscode.window.showErrorMessage("Tabscolor was unable to write to " + bootstrap.file);
+          vscode.window.showErrorMessage(
+            "Tabscolor was unable to write to " + bootstrap.file
+          );
         }
       });
-    }
-    else {
+    } else {
       bootstrap.add(patchName, code).write();
       if (storage.get("patchedBefore")) {
         storage.set("firstActivation", false);
         storage.set("secondActivation", false);
         promptRestartAfterUpdate();
-      }
-      else {
+      } else {
         storage.set("patchedBefore", true);
         promptRestart();
       }
     }
-  }
-  else {
+  } else {
     storage.set("patchedBefore", true);
     storage.set("firstActivation", true);
   }
   if (storage.get("firstActivation")) {
-
     generateCssFile(context);
     reloadCss();
     storage.set("secondActivation", true);
   }
-  vscode.workspace.onDidChangeConfiguration(e => {
-    if (e.affectsConfiguration('tabsColor')) {
-      vscode.window.showInformationMessage('tabs colors updated');
+  vscode.workspace.onDidChangeConfiguration((e) => {
+    if (e.affectsConfiguration("tabsColor")) {
+      vscode.window.showInformationMessage("tabs colors updated");
       generateCssFile(context);
       reloadCss();
     }
@@ -428,180 +480,250 @@ function activate(context) {
 
   storage.set("firstActivation", true);
 
+  let disposable = vscode.commands.registerCommand(
+    "tabscolor.test",
+    function () {
+      console.log("test begin");
+      bootstrap.remove(patchName).add(patchName, code).write();
+      // bootstrap.sudoPrompt(function(result){})
+    }
+  );
 
-  let disposable = vscode.commands.registerCommand('tabscolor.test', function () {
-    console.log("test begin");
-    bootstrap.remove(patchName).add(patchName, code).write();
-    // bootstrap.sudoPrompt(function(result){})
-  });
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.locateTargetFile",
+    function () {
+      // Display the stored tabs colors in console
+      console.log("bootstrap file :" + bootstrapPath);
+      vscode.window.showInformationMessage(bootstrapPath);
+    }
+  );
 
-  disposable = vscode.commands.registerCommand('tabscolor.locateTargetFile', function () {
-    // Display the stored tabs colors in console
-    console.log("bootstrap file :" + bootstrapPath);
-    vscode.window.showInformationMessage(bootstrapPath);
-  });
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.debugMac",
+    function () {
+      const options = {
+        name: "TabsColor",
+      };
 
-  disposable = vscode.commands.registerCommand('tabscolor.debugMac', function () {
-    const options = {
-      name: 'TabsColor'
-    };
-
-    vscode.window.showInformationMessage("trying to allow editing of Bootstrap file. Check vs code console for messages ");
-    console.log("Tabscolor: Trying to allow editing of Bootstrap file");
-    const separator = bootstrapPath.includes("/") ? "/" : "\\";
-    const baseName = bootstrapPath.split(separator).reverse()[0];
-    // Find the right command to allow editing of Bootstrap file on MAC
-    // var command=`chmod 777 "${bootstrapPath}"`
-    const command = `chmod a+w "${bootstrapPath}"`;
-    console.log("Tabscolor: command : " + command);
-    sudo.exec(command, options,
-      function (error, stdout, stderr) {
+      vscode.window.showInformationMessage(
+        "trying to allow editing of Bootstrap file. Check vs code console for messages "
+      );
+      console.log("Tabscolor: Trying to allow editing of Bootstrap file");
+      const separator = bootstrapPath.includes("/") ? "/" : "\\";
+      const baseName = bootstrapPath.split(separator).reverse()[0];
+      // Find the right command to allow editing of Bootstrap file on MAC
+      // var command=`chmod 777 "${bootstrapPath}"`
+      const command = `chmod a+w "${bootstrapPath}"`;
+      console.log("Tabscolor: command : " + command);
+      sudo.exec(command, options, function (error, stdout, stderr) {
         if (error) {
-
           vscode.window.showInformationMessage("command failed");
           console.error("tabsColor:" + error);
           throw error;
+        } else {
+          vscode.window.showInformationMessage(
+            "command executed successfully. Bootstrap file should be able to get patched now"
+          );
+          console.log(
+            "Tabscolor: command executed successfully. Bootstrap file should be able to get patched now "
+          );
         }
-        else {
-          vscode.window.showInformationMessage("command executed successfully. Bootstrap file should be able to get patched now");
-          console.log("Tabscolor: command executed successfully. Bootstrap file should be able to get patched now ");
-        }
-      }
-    );
-  });
-
-  disposable = vscode.commands.registerCommand('tabscolor.clearTabsColors', function () {
-    const cssFile = path.join(modulesPath(context), "inject.css").replace(/\\/g, "/");
-    const css = new Core(context, cssFile);
-    storage.emptyTabs();
-    css.empty();
-    generateCssFile(context);
-    reloadCss();
-    vscode.window.showInformationMessage('tabs colors cleared. rules based on filetype and directories won\'t be affected');
-  });
-
-
-  disposable = vscode.commands.registerCommand('tabscolor.debugColors', function () {
-    // Display the stored tabs colors in console
-    console.log(storage.get("tabs"));
-  });
-
-  disposable = vscode.commands.registerCommand('tabscolor.debugEraseStorage', function () {
-    storage.set("firstActivation", false);
-    storage.set("secondActivation", false);
-    storage.set("patchedBefore", false);
-  });
-
-  disposable = context.subscriptions.push(vscode.commands.registerCommand('tabscolor.clearOpenTabColors', () => {
-    clearOpenTabColors(context);
-  }));
-
-
-  disposable = vscode.commands.registerCommand('tabscolor.none', function (a, b) {
-    unsetColor(context, getTabTitle(a));
-  });
-
-
-  disposable = vscode.commands.registerCommand('tabscolor.repatch', function (a, b) {
-    bootstrap.remove(patchName).add(patchName, code).write();
-    promptRestart();
-  });
-
-
-  disposable = vscode.commands.registerCommand('tabscolor.removePatch', function (a, b) {
-    bootstrap.remove(patchName).write();
-    promptRestart();
-  });
-
-  disposable = vscode.commands.registerCommand('tabscolor.black', function (a, b) {
-    setColor(context, "black", getTabTitle(a));
-  });
-
-  disposable = vscode.commands.registerCommand('tabscolor.salmon', function (a, b) {
-    setColor(context, "salmon", getTabTitle(a));
-  });
-
-
-  disposable = vscode.commands.registerCommand('tabscolor.green', function (a, b) {
-    setColor(context, "green", getTabTitle(a));
-  });
-
-  disposable = vscode.commands.registerCommand('tabscolor.blue', function (a, b) {
-    setColor(context, "blue", getTabTitle(a));
-  });
-
-  disposable = vscode.commands.registerCommand('tabscolor.red', function (a, b) {
-    setColor(context, "red", getTabTitle(a));
-  });
-
-  disposable = vscode.commands.registerCommand('tabscolor.orange', function (a, b) {
-    setColor(context, "orange", getTabTitle(a));
-
-  });
-
-  disposable = vscode.commands.registerCommand('tabscolor.yellow', function (a, b) {
-    setColor(context, "yellow", getTabTitle(a));
-
-  });
-
-  disposable = vscode.commands.registerCommand('tabscolor.white', function (a, b) {
-    setColor(context, "white", getTabTitle(a));
-  });
-
-  disposable = vscode.commands.registerCommand('tabscolor.randomColor', function (a, b) {
-    const colorNames = Object.keys({ ...storage.get("customColors"), ...storage.get("defaultColors") });
-    let colorName;
-    do {
-      colorName = colorNames[Math.floor(Math.random() * colorNames.length)];
+      });
     }
-    while (colorName === "none");
-    vscode.window.showInformationMessage(`random color "${colorName}" set to current file`);
-    setColor(context, colorName, getTabTitle(a));
+  );
 
-  });
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.clearTabsColors",
+    function () {
+      const cssFile = path
+        .join(modulesPath(context), "inject.css")
+        .replace(/\\/g, "/");
+      const css = new Core(context, cssFile);
+      storage.emptyTabs();
+      css.empty();
+      generateCssFile(context);
+      reloadCss();
+      vscode.window.showInformationMessage(
+        "tabs colors cleared. rules based on filetype and directories won't be affected"
+      );
+    }
+  );
 
-  disposable = vscode.commands.registerCommand('tabscolor.more', function (a, b) {
-    const customColors = storage.get("customColors") || {};
-    if (!Object.keys(customColors).length)
-      return vscode.window.showWarningMessage("No more colors, add some first");
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.debugColors",
+    function () {
+      // Display the stored tabs colors in console
+      console.log(storage.get("tabs"));
+    }
+  );
 
-    // create  options for user to choose from
-    const options = {
-      placeHolder: "Choose color (click escape to cancel)",
-      matchOnDescription: true,
-      matchOnDetail: true,
-      ignoreFocusOut: true,
-      canPickMany: false
-    };
-    vscode.window.showQuickPick(
-      Object.keys(customColors).map(c => ({
-        label: c,
-        description: `background: ${customColors[c].background}, color: ${customColors[c].color}`,
-      }), options)
-    ).then(color => {
-      if (!color)
-        return;
-      setColor(context, color.label, getTabTitle(a));
-    });
-  });
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.debugEraseStorage",
+    function () {
+      storage.set("firstActivation", false);
+      storage.set("secondActivation", false);
+      storage.set("patchedBefore", false);
+    }
+  );
 
+  disposable = context.subscriptions.push(
+    vscode.commands.registerCommand("tabscolor.clearOpenTabColors", () => {
+      clearOpenTabColors(context);
+    })
+  );
+
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.none",
+    function (a, b) {
+      unsetColor(context, a);
+    }
+  );
+
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.repatch",
+    function (a, b) {
+      bootstrap.remove(patchName).add(patchName, code).write();
+      promptRestart();
+    }
+  );
+
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.removePatch",
+    function (a, b) {
+      bootstrap.remove(patchName).write();
+      promptRestart();
+    }
+  );
+
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.black",
+    function (a, b) {
+      setColor(context, "black", a);
+    }
+  );
+
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.salmon",
+    function (a, b) {
+      setColor(context, "salmon", a);
+    }
+  );
+
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.green",
+    function (a, b) {
+      setColor(context, "green", a);
+    }
+  );
+
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.blue",
+    function (a, b) {
+      setColor(context, "blue", a);
+    }
+  );
+
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.red",
+    function (a, b) {
+      setColor(context, "red", a);
+    }
+  );
+
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.orange",
+    function (a, b) {
+      setColor(context, "orange", a);
+    }
+  );
+
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.yellow",
+    function (a, b) {
+      setColor(context, "yellow", a);
+    }
+  );
+
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.white",
+    function (a, b) {
+      setColor(context, "white", a);
+    }
+  );
+
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.randomColor",
+    function (a, b) {
+      const colorNames = Object.keys({
+        ...storage.get("customColors"),
+        ...storage.get("defaultColors"),
+      });
+      let colorName;
+      do {
+        colorName = colorNames[Math.floor(Math.random() * colorNames.length)];
+      } while (colorName === "none");
+      vscode.window.showInformationMessage(
+        `random color "${colorName}" set to current file`
+      );
+      setColor(context, colorName, a);
+    }
+  );
+
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.more",
+    function (a, b) {
+      const customColors = storage.get("customColors") || {};
+      if (!Object.keys(customColors).length)
+        return vscode.window.showWarningMessage(
+          "No more colors, add some first"
+        );
+
+      // create  options for user to choose from
+      const options = {
+        placeHolder: "Choose color (click escape to cancel)",
+        matchOnDescription: true,
+        matchOnDetail: true,
+        ignoreFocusOut: true,
+        canPickMany: false,
+      };
+      vscode.window
+        .showQuickPick(
+          Object.keys(customColors).map(
+            (c) => ({
+              label: c,
+              description: `background: ${customColors[c].background}, color: ${customColors[c].color}`,
+            }),
+            options
+          )
+        )
+        .then((color) => {
+          if (!color) return;
+          setColor(context, color.label, a);
+        });
+    }
+  );
 
   // add color commands
-  disposable = vscode.commands.registerCommand('tabscolor.addColor', function (a, b) {
-    const allColors = { ...storage.get("customColors"), ...storage.get("defaultColors") };
-    // Create a new webview panel
-    const panel = vscode.window.createWebviewPanel(
-      'colorPicker', // Identifier for the webview panel
-      'Color Picker', // Title for the webview panel
-      vscode.ViewColumn.One, // Column in which to show the webview panel
-      {
-        enableScripts: true,
-        retainContextWhenHidden: true
-      } // Webview panel options
-    );
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.addColor",
+    function (a, b) {
+      const allColors = {
+        ...storage.get("customColors"),
+        ...storage.get("defaultColors"),
+      };
+      // Create a new webview panel
+      const panel = vscode.window.createWebviewPanel(
+        "colorPicker", // Identifier for the webview panel
+        "Color Picker", // Title for the webview panel
+        vscode.ViewColumn.One, // Column in which to show the webview panel
+        {
+          enableScripts: true,
+          retainContextWhenHidden: true,
+        } // Webview panel options
+      );
 
-    // Generate the HTML for a table of colors
-    const html = `
+      // Generate the HTML for a table of colors
+      const html = `
 				<style>
 					button {
 						background-color: rgb(29 144 211);
@@ -861,98 +983,116 @@ function activate(context) {
 					});
 				</script>
 			`;
-    // Set the webview's initial html content
-    panel.webview.html = html;
+      // Set the webview's initial html content
+      panel.webview.html = html;
 
-    // Handle messages from the webview
-    panel.webview.onDidReceiveMessage(
-      message => {
-        switch (message.command) {
-          case 'addColor': {
-            if (message.colorName && !message.colorName.trim() || !message.colorBackground || !message.colorText)
-              return vscode.window.showErrorMessage('Please fill in all fields correctly');
-            if (allColors[message.colorName])
-              return vscode.window.showErrorMessage(`Color "${message.colorName}" already exists`);
-            const newColor = {
-              [message.colorName]: {
+      // Handle messages from the webview
+      panel.webview.onDidReceiveMessage(
+        (message) => {
+          switch (message.command) {
+            case "addColor": {
+              if (
+                (message.colorName && !message.colorName.trim()) ||
+                !message.colorBackground ||
+                !message.colorText
+              )
+                return vscode.window.showErrorMessage(
+                  "Please fill in all fields correctly"
+                );
+              if (allColors[message.colorName])
+                return vscode.window.showErrorMessage(
+                  `Color "${message.colorName}" already exists`
+                );
+              const newColor = {
+                [message.colorName]: {
+                  background: message.colorBackground,
+                  color: message.colorText,
+                },
+              };
+              if (message.colorOpacity != 0.6)
+                newColor[message.colorName].opacity = message.colorOpacity;
+              storage.addCustomColor(newColor);
+              allColors[message.colorName] = {
                 background: message.colorBackground,
-                color: message.colorText
-              }
-            };
-            if (message.colorOpacity != 0.6)
-              newColor[message.colorName].opacity = message.colorOpacity;
-            storage.addCustomColor(newColor);
-            allColors[message.colorName] = {
-              background: message.colorBackground,
-              color: message.colorText
-            };
-            setColor(context, message.colorName, getTabTitle(a));
-            vscode.window.showInformationMessage(`Color "${message.colorName}" added`);
-            return;
+                color: message.colorText,
+              };
+              setColor(context, message.colorName, a);
+              vscode.window.showInformationMessage(
+                `Color "${message.colorName}" added`
+              );
+              return;
+            }
+            case "error": {
+              vscode.window.showErrorMessage(message.message);
+              return;
+            }
+            case "close": {
+              panel.dispose();
+              return;
+            }
           }
-          case 'error': {
-            vscode.window.showErrorMessage(message.message);
-            return;
-          }
-          case 'close': {
-            panel.dispose();
-            return;
-          }
-        }
-      },
-      undefined,
-      context.subscriptions
-    );
-  });
+        },
+        undefined,
+        context.subscriptions
+      );
+    }
+  );
 
   // delete color commands
-  disposable = vscode.commands.registerCommand('tabscolor.deleteCustomColor', () => {
-    const customColors = storage.get("customColors") || {};
-    const tabs = storage.get("tabs") || {};
-    if (Object.keys(customColors).length === 0)
-      return vscode.window.showWarningMessage("No custom colors to delete");
-    const colorNames = Object.keys(customColors);
-    vscode.window.showQuickPick(colorNames, { canPickMany: true }).then((colorNames) => {
-      if (!colorNames)
-        return;
-      colorNames.forEach((colorName) => {
-        const allColorTabs = Object.keys(tabs);
-        const hasUseThisColor = allColorTabs.includes(colorName);
-        let countFiles = 0;
+  disposable = vscode.commands.registerCommand(
+    "tabscolor.deleteCustomColor",
+    () => {
+      const customColors = storage.get("customColors") || {};
+      const tabs = storage.get("tabs") || {};
+      if (Object.keys(customColors).length === 0)
+        return vscode.window.showWarningMessage("No custom colors to delete");
+      const colorNames = Object.keys(customColors);
+      vscode.window
+        .showQuickPick(colorNames, { canPickMany: true })
+        .then((colorNames) => {
+          if (!colorNames) return;
+          colorNames.forEach((colorName) => {
+            const allColorTabs = Object.keys(tabs);
+            const hasUseThisColor = allColorTabs.includes(colorName);
+            let countFiles = 0;
 
-        if (hasUseThisColor) {
-          tabs[colorName].forEach((file) => {
-            countFiles++;
-            unsetColor(context, file.replace(/\\/g, "\\\\"));
+            if (hasUseThisColor) {
+              tabs[colorName].forEach((file) => {
+                countFiles++;
+                unsetColor(context, file.replace(/\\/g, "\\\\"));
+              });
+              delete tabs[colorName];
+              storage.set("tabs", tabs);
+            }
+
+            delete customColors[colorName];
+
+            storage.set("customColors", customColors);
+            vscode.window.showInformationMessage(
+              `Deleted color "${colorName}"${
+                countFiles ? ` and removed from ${countFiles} tabs` : ""
+              }`
+            );
           });
-          delete tabs[colorName];
-          storage.set("tabs", tabs);
-        }
-
-
-        delete customColors[colorName];
-
-        storage.set("customColors", customColors);
-        vscode.window.showInformationMessage(`Deleted color "${colorName}"${countFiles ? ` and removed from ${countFiles} tabs` : ""}`);
-      });
-    });
-  });
-
-
+        });
+    }
+  );
 
   context.subscriptions.push(disposable);
 }
 
 // when deactivate (reload window), value of context is undefined
 function deactivate(context) {
-  const bootstrapPath = path.join(path.dirname(__filename), "bootstrap-window.js");
+  const bootstrapPath = path.join(
+    path.dirname(__filename),
+    "bootstrap-window.js"
+  );
   const bootstrap = new Core(context, bootstrapPath);
   if (context) {
     const storage = new Storage(context);
     storage.set("firstActivation", false);
     storage.set("secondActivation", false);
-  }
-  else {
+  } else {
     storage_.update("firstActivation", false);
     storage_.update("secondActivation", false);
   }
@@ -961,5 +1101,5 @@ function deactivate(context) {
 
 module.exports = {
   activate,
-  deactivate
+  deactivate,
 };
