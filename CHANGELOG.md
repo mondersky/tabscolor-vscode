@@ -1,3 +1,7 @@
+## [0.2.12] - 2024-11-12
+
+Support tabs in preview mode
+
 ## [0.2.11] - 2024-11-03
 
 More SSH tabs are being supported

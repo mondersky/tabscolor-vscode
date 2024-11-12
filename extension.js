@@ -13,7 +13,7 @@ const Storage = require("./modules/storage.js");
 const tabsColorLog = vscode.window.createOutputChannel("Tabs Color");
 let storage_ = null;
 const vscodeVersion = vscode.version;
-let patchName = "patch.1.1";
+let patchName = "patch.1.2";
 
 function resourcesPath() {
   const appRoot = vscode.env.appRoot;
@@ -69,7 +69,7 @@ function generateCssFile(context) {
   const homeDir = os.homedir() + "/";
 
   for (const a in byFileType) {
-    if (a == "filetype") continue;
+    if (a == "filetype" || a == "myfiletype") continue;
     let tabSelector = `.tab[title*=".${formatTitle(a)}" i]`;
     style += `${tabSelector}{background-color:${
       byFileType[a].backgroundColor
@@ -116,16 +116,21 @@ function generateCssFile(context) {
     const _fontColor = colorsData[i].color;
     const _opacity = colorsData[i].opacity || "0.6";
     const backgroundSelectorsArr = _colorTabs.map(function (a) {
-      return `.tab[title*="${formatTitle(a)}" i]`;
+      let tabFileName = path.basename(a);
+      return `.tab[title*="${formatTitle(a)}" i],.tab[title="${tabFileName}"][previewMode="true"]`;
     });
     activeSelectorsArr.push(
       ..._colorTabs.map(function (a) {
-        return `.tab[title*="${formatTitle(a)}" i].active`;
+        let tabFileName = path.basename(a);
+        return `.tab[title*="${formatTitle(a)}" i].active,.tab[title="${tabFileName}"][previewMode="true"].active`;
       })
     );
     const fontColorSelectorsArr = _colorTabs.map(function (a) {
+      
+      let tabFileName = path.basename(a);
       let tabSelector = `.tab[title*="${formatTitle(a)}" i]`;
-      return `${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before`;
+      let previewModeSelector = `.tab[title="${tabFileName}"][previewMode="true"]`;
+      return `${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before,${previewModeSelector} a,${previewModeSelector} .monaco-icon-label:after,${previewModeSelector} .monaco-icon-label:before`;
     });
     if (backgroundSelectorsArr.length > 0) {
       backgroundSelectors =
@@ -161,15 +166,13 @@ function generateCssFile(context) {
   }
 }
 
-function getPossibleTitles(tab){
-  
+function getPossibleTitles(tab) {
   let titles = [];
 
   let file =
     vscode.window.activeTextEditor &&
     vscode.window.activeTextEditor.document.fileName;
   let title = "";
-  console.log("tab-----------", tab);
   if (
     tab &&
     ((tab.external && tab.external.startsWith("vscode-remote")) ||
@@ -178,12 +181,14 @@ function getPossibleTitles(tab){
     title = tab.path;
     // keep one title with /home/USER/dir and another one with ~/dir, since we can tell if the user folder name is the main user or not
     titles.push(title);
-    if (tab.authority && (tab.authority.startsWith("wsl") || tab.authority.startsWith("ssh")) && title.startsWith("/home/"))
-    {
-        // replace /home/USER/ by tilde ~, temporary solution until finding a proper way to get the homedir path
-        titles.push(title.replace(/^\/([^/]+\/[^/]+\/)/, "~/"));
-      }
-      
+    if (
+      tab.authority &&
+      (tab.authority.startsWith("wsl") || tab.authority.startsWith("ssh")) &&
+      title.startsWith("/home/")
+    ) {
+      // replace /home/USER/ by tilde ~, temporary solution until finding a proper way to get the homedir path
+      titles.push(title.replace(/^\/([^/]+\/[^/]+\/)/, "~/"));
+    }
   } else {
     if (tab && tab.fsPath) title = tab.fsPath;
     titles.push(title.replace(/\\/g, "\\\\"));
@@ -191,12 +196,12 @@ function getPossibleTitles(tab){
   return titles;
 }
 
-function setColor(context, color, tab ){
+function setColor(context, color, tab) {
   const storage = new Storage(context);
   if (storage.get("patchedBefore")) {
     if (storage.get("secondActivation")) {
       let titles = getPossibleTitles(tab);
-      for(let t of titles){
+      for (let t of titles) {
         storage.addTabColor(color, t);
       }
       generateCssFile(context);
@@ -217,14 +222,11 @@ function unsetColor(context, tab) {
   const storage = new Storage(context);
   if (storage.get("patchedBefore")) {
     if (storage.get("secondActivation")) {
-      if(typeof tab == "string"){
+      if (typeof tab == "string") {
         storage.removeTabColor(tab);
-      }
-      else{
-        
+      } else {
         let titles = getPossibleTitles(tab);
-        console.log(titles);
-        for(let t of titles){
+        for (let t of titles) {
           storage.removeTabColor(t);
         }
         generateCssFile(context);
@@ -383,6 +385,9 @@ function activate(context) {
       if(tabLabel){
         let filePath = tabLabel.getAttribute("aria-label").split(" •")[0]
         tab.setAttribute("title", filePath)
+        if (tabLabel.classList.contains('italic')) { //tab in preview mode
+          tab.setAttribute("previewMode", true)
+        }
       }
       })
     }
@@ -426,6 +431,9 @@ function activate(context) {
   }
   if (bootstrap.hasPatch("patch.1")) {
     bootstrap.remove("patch.1").write();
+  }
+  if (bootstrap.hasPatch("patch.1.1")) {
+    bootstrap.remove("patch.1.1").write();
   }
   if (!bootstrap.hasPatch(patchName)) {
     vscode.window.showInformationMessage(
