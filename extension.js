@@ -43,6 +43,7 @@ function recordFirstKnownUse(context) {
     storage.set("firstKnownUse", new Date().toISOString().slice(0, 10));
   }
 }
+
 function generateCssFile(context) {
   const colors = {
     none: { background: "transparent", color: "inherit" },
@@ -249,12 +250,15 @@ async function clearOpenTabColors(context) {
   const tabs = storage.get("tabs") || {};
   const editors = vscode.workspace.textDocuments;
   for (const editor of editors) {
-    const resource = editor.uri;
-    const fileName = resource.fsPath.replace(/\\/g, "\\\\");
+    // const resource = editor.uri;
+    // const fileName = resource.fsPath.replace(/\\/g, "\\\\");
+    let fileNames = getPossibleTitles(editor)
     for (const color in tabs) {
-      if (tabs[color].includes(fileName)) {
-        tabs[color] = tabs[color].filter((tab) => tab !== fileName);
-      }
+      // if (tabs[color].includes(fileName)) {
+        tabs[color] = tabs[color].filter(function(tab) {
+          return !fileNames.includes(tab)
+        });
+      // }
     }
   }
 
@@ -605,7 +609,7 @@ function activate(context) {
 
   disposable = vscode.commands.registerCommand(
     "tabscolor.black",
-    function (a, b) {
+    function (a, b, c) {
       setColor(context, "black", a);
     }
   );

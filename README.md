@@ -23,7 +23,7 @@ Install the extension, RESTART your vscode (not just reload), right click on any
 You can also use settings for coloring based on path or filetype.
 
 ### Customize VSCode tab color by file types
-
+> Go to the extension page > manage (gear icon) > settings or add these lines to your VS Code user settings.json 
 example:
 ```
 "tabsColor.byFileType": {
@@ -33,7 +33,6 @@ example:
     }
   }
 ```
-Add this to your VS Code user `settings.json`
 
 ### Customize VSCode tab color by directory path
 
@@ -56,7 +55,6 @@ example 2 (partial path):
   }
 }
 ```
-Add this to your VS Code user `settings.json`
 
 ### Set the active tab color
 
@@ -67,7 +65,6 @@ example:
   "fontColor": "black"
 }
 ```
-Add this to your VS Code user `settings.json`
 
 
 ## Notes :
@@ -96,7 +93,6 @@ Add this to your VS Code user `settings.json`
 
 
 ## Available commands:
-
 - clear all tabs colors
 - clear all open tab colors
 - set tab random color
@@ -121,3 +117,4 @@ Don't hesitate to contribute to this extension!
 - [ ] Add a new item to the explorer contextual menu to quickly set colors based on to the target folder
 - [ ] New feature: toggle color of a tab by a shortcut
 - [ ] New setting: tab opacity when inactive
+- [ ] New setting: ignore active tab color when the tab has already a color
