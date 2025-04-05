@@ -93,6 +93,7 @@ example:
 
 
 ## Available commands:
+> press Ctrl+Shift+P (or Cmd+Shift+P on macOS) to open the Command Palette
 - clear all tabs colors
 - clear all open tab colors
 - set tab random color
