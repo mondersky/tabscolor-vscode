@@ -22,8 +22,13 @@ This extension lets you color the background/text of your tabs either by right c
 Install the extension, RESTART your vscode (not just reload), right click on any tab and select from the color menu.
 You can also use settings for coloring based on path or filetype.
 
-### Customize VSCode tab color by file types
+## 🎨 Tab Color Customization
+
+This extension allows you to customize the appearance of your VS Code tabs based on file types, directory paths, and the active tab.
+
 > Go to the extension page > manage (gear icon) > settings or add these lines to your VS Code user settings.json 
+
+### Customize VSCode tab color by file types
 example:
 ```
 "tabsColor.byFileType": {
