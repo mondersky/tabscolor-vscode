@@ -1,5 +1,5 @@
 
-[![Total Installs](https://img.shields.io/visual-studio-marketplace/i/mondersky.tabscolor)](https://marketplace.visualstudio.com/items?itemName=mondersky.tabscolor)
+[![Version](https://img.shields.io/badge/version-0.2.14-blue.svg)](https://marketplace.visualstudio.com/items?itemName=mondersky.tabscolor) [![VS Code](https://img.shields.io/badge/VS_Code-%5E1.68.0-blueviolet.svg)](https://code.visualstudio.com/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > ⚠️ This extension may not work on mac os and some linux systems
 
