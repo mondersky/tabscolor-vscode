@@ -13,7 +13,7 @@ const Storage = require("./modules/storage.js");
 const tabsColorLog = vscode.window.createOutputChannel("Tabs Color");
 let storage_ = null;
 const vscodeVersion = vscode.version;
-let patchName = "patch.1.2";
+let patchName = "patch.1.3";
 
 function resourcesPath() {
   const appRoot = vscode.env.appRoot;
@@ -71,7 +71,7 @@ function generateCssFile(context) {
 
   for (const a in byFileType) {
     if (a == "filetype" || a == "myfiletype") continue;
-    let tabSelector = `.tab[title*=".${formatTitle(a)}" i]`;
+    let tabSelector = `.tab[data-filepath*=".${formatTitle(a)}" i]`;
     style += `${tabSelector}{background-color:${
       byFileType[a].backgroundColor
     } !important; opacity:${byFileType[a].opacity || "0.6"};}
@@ -83,7 +83,7 @@ function generateCssFile(context) {
   for (const a in byDirectory) {
     if (a === "my/directory/" || a === "C:\\my\\directory\\") continue;
     const title = a.replace(/\\/g, "\\\\");
-    let tabSelector = `.tab[title*="${formatTitle(title)}" i]`;
+    let tabSelector = `.tab[data-filepath*="${formatTitle(title)}" i]`;
     style += `${tabSelector}{background-color:${
       byDirectory[a].backgroundColor
     } !important; opacity: ${byDirectory[a].opacity || "0.6"};}
@@ -118,19 +118,19 @@ function generateCssFile(context) {
     const _opacity = colorsData[i].opacity || "0.6";
     const backgroundSelectorsArr = _colorTabs.map(function (a) {
       let tabFileName = path.basename(a);
-      return `.tab[title*="${formatTitle(a)}" i],.tab[title="${tabFileName}"][previewMode="true"]`;
+      return `.tab[data-filepath*="${formatTitle(a)}" i],.tab[data-filepath="${tabFileName}"][previewMode="true"]`;
     });
     activeSelectorsArr.push(
       ..._colorTabs.map(function (a) {
         let tabFileName = path.basename(a);
-        return `.tab[title*="${formatTitle(a)}" i].active,.tab[title="${tabFileName}"][previewMode="true"].active`;
+        return `.tab[data-filepath*="${formatTitle(a)}" i].active,.tab[data-filepath="${tabFileName}"][previewMode="true"].active`;
       })
     );
     const fontColorSelectorsArr = _colorTabs.map(function (a) {
       
       let tabFileName = path.basename(a);
-      let tabSelector = `.tab[title*="${formatTitle(a)}" i]`;
-      let previewModeSelector = `.tab[title="${tabFileName}"][previewMode="true"]`;
+      let tabSelector = `.tab[data-filepath*="${formatTitle(a)}" i]`;
+      let previewModeSelector = `.tab[data-filepath="${tabFileName}"][previewMode="true"]`;
       return `${tabSelector} a,${tabSelector} .monaco-icon-label:after,${tabSelector} .monaco-icon-label:before,${previewModeSelector} a,${previewModeSelector} .monaco-icon-label:after,${previewModeSelector} .monaco-icon-label:before`;
     });
     if (backgroundSelectorsArr.length > 0) {
@@ -295,18 +295,18 @@ function activate(context) {
       });
   }
 
-  if (storage.get("alert 7.3.2024") !== true && vscodeVersion < "1.87.0") {
-    vscode.window
-      .showInformationMessage(
-        "update your vscode to 1.87.0 or higher to enable tabsColor.",
-        "Don't show this again"
-      )
-      .then((answer) => {
-        if (answer === "Don't show this again") {
-          storage.set("alert 7.3.2024", true);
-        }
-      });
-  }
+  // if (storage.get("alert 7.3.2024") !== true && vscodeVersion < "1.87.0") {
+  //   vscode.window
+  //     .showInformationMessage(
+  //       "update your vscode to 1.87.0 or higher to enable tabsColor.",
+  //       "Don't show this again"
+  //     )
+  //     .then((answer) => {
+  //       if (answer === "Don't show this again") {
+  //         storage.set("alert 7.3.2024", true);
+  //       }
+  //     });
+  // }
 
   if (storage.get("deprecated dialog") == true) {
     vscode.window
@@ -388,7 +388,7 @@ function activate(context) {
       let tabLabel = tab.querySelector(".tab-label")
       if(tabLabel){
         let filePath = tabLabel.getAttribute("aria-label").split(" •")[0]
-        tab.setAttribute("title", filePath)
+        tab.setAttribute("data-filepath", filePath) // Using custom data attribute instead of title
         if (tabLabel.classList.contains('italic')) { //tab in preview mode
           tab.setAttribute("previewMode", true)
         }
@@ -438,6 +438,9 @@ function activate(context) {
   }
   if (bootstrap.hasPatch("patch.1.1")) {
     bootstrap.remove("patch.1.1").write();
+  }
+  if (bootstrap.hasPatch("patch.1.2")) {
+    bootstrap.remove("patch.1.2").write();
   }
   if (!bootstrap.hasPatch(patchName)) {
     vscode.window.showInformationMessage(

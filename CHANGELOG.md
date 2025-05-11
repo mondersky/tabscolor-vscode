@@ -1,3 +1,7 @@
+## [0.2.13] - 2024-11-12
+
+fix version alert popup + tab filepath on hover fix
+
 ## [0.2.12] - 2024-11-12
 
 Support tabs in preview mode

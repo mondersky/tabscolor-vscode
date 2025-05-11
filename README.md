@@ -107,6 +107,9 @@ example:
 - reapply patch
 - remove patch (required for uninstalling)
 
+## Recent changes
+- v0.2.14: Fixed tooltip issue when hovering tabs by using custom data attribute instead of title attribute
+
 
 ## Contributors Welcome
 
@@ -121,6 +124,6 @@ Don't hesitate to contribute to this extension!
 - [ ] New command: set random colors to all open tabs
 - [ ] New command: sort open tabs by color
 - [ ] Add a new item to the explorer contextual menu to quickly set colors based on to the target folder
-- [ ] New feature: toggle color of a tab by a shortcut
-- [ ] New setting: tab opacity when inactive
+- [ ] New feature: toggle color of a tab using a keyboard (or mouse combined) shortcut
+- [ ] New setting: tab opacity when a tab is inactive
 - [ ] New setting: ignore active tab color when the tab has already a color
