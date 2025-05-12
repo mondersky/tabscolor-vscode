@@ -1,4 +1,4 @@
-## [0.2.13] - 2025-04-12
+## [0.2.13] - 2025-05-12
 
 fix version alert popup + tab filepath on hover fix
 
