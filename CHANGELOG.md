@@ -1,3 +1,7 @@
+## [0.2.14] - 2025-05-24
+
+set color with commands fix
+
 ## [0.2.13] - 2025-05-12
 
 fix version alert popup + tab filepath on hover fix

@@ -201,6 +201,10 @@ function setColor(context, color, tab) {
   const storage = new Storage(context);
   if (storage.get("patchedBefore")) {
     if (storage.get("secondActivation")) {
+      // If tab is undefined, use the current active tab's URI
+      if (!tab && vscode.window.activeTextEditor) {
+        tab = vscode.window.activeTextEditor.document.uri;
+      }
       let titles = getPossibleTitles(tab);
       for (let t of titles) {
         storage.addTabColor(color, t);
@@ -223,6 +227,9 @@ function unsetColor(context, tab) {
   const storage = new Storage(context);
   if (storage.get("patchedBefore")) {
     if (storage.get("secondActivation")) {
+      if (!tab && vscode.window.activeTextEditor) {
+        tab = vscode.window.activeTextEditor.document.uri;
+      }
       if (typeof tab == "string") {
         storage.removeTabColor(tab);
       } else {
@@ -1031,6 +1038,7 @@ function activate(context) {
                 background: message.colorBackground,
                 color: message.colorText,
               };
+              // a = tab info from context menu, undefined from command palette  
               setColor(context, message.colorName, a);
               vscode.window.showInformationMessage(
                 `Color "${message.colorName}" added`
